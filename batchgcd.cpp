@@ -36,8 +36,9 @@ int main(int argc, char** argv){
     cout << "Done. Compromised keys (IDs):" << endl;
     for(unsigned int i = 0; i < gcds.size(); i++) {
         if(gcds[i] != 1) {
-            cout << i << endl;
+            cout << i << " ";
         }
     }
+    cout << endl;
     return 0;
 }
