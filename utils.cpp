@@ -7,15 +7,13 @@ vector<mpz_class> input_moduli;
 
 int product_tree(vector<mpz_class> X){
     cout << "Computing product tree of " << X.size() << " moduli." << endl;
-    vector<mpz_class> current_level;
+    vector<mpz_class> current_level = X;
     vector<mpz_class> new_level;
-    current_level = X;
     int l = 0;
     mpz_class prod;
     while (current_level.size() > 1) {
         filesPerFloor.push_back(current_level.size());
         write_level_to_file(l, current_level);
-        // new_level.clear();
         vector<mpz_class>().swap(new_level);
         cout << "   Multiplying " << current_level.size() << " ints of ";
         cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
@@ -28,6 +26,10 @@ int product_tree(vector<mpz_class> X){
             new_level.push_back(current_level.back());
         }
         current_level = new_level;
+        if (l == 0) {
+            // Free leaves after using
+            vector<mpz_class>().swap(X);
+        }
         l ++;
     }
     filesPerFloor.push_back(current_level.size());

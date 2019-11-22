@@ -19,8 +19,6 @@ int main(int argc, char** argv){
     cout << "Part (A) - Computing product tree of all moduli" << endl;
     cout << "-----------------------------------------------" << endl;
     int levels = product_tree(input_moduli);
-    // Free memory held by moduli so that next part is lighter
-    vector<mpz_class>().swap(input_moduli);
 
     cout << "End Part (A)" << endl;
 
@@ -32,9 +30,9 @@ int main(int argc, char** argv){
 
     clock_gettime(CLOCK_MONOTONIC, &start);
     // 2. Compute the remainders of Z mod Xᵢ²
-    cout << "-----------------------------------------------" << endl;
+    cout << "------------------------------------------------" << endl;
     cout << "Part (B) - Computing the remainders of Z mod Xᵢ²" << endl;
-    cout << "-----------------------------------------------" << endl;
+    cout << "------------------------------------------------" << endl;
     vector<mpz_class> R = remainders_squares(levels);
     cout << "End Part (B)" << endl;
     clock_gettime(CLOCK_MONOTONIC, &finish);
@@ -59,12 +57,13 @@ int main(int argc, char** argv){
         gcds.push_back(_gcd);
     }
     cout << "Done. Compromised keys (IDs):" << endl;
-    for(int i = 0; i < min(20, int(gcds.size())); i++) {
+    int c = 0;
+    for(int i = 0; i < int(gcds.size()); i++) {
         if(gcds[i] != 1) {
-            cout << i << " ";
+            c ++ ;
         }
     }
-    cout << " ... " << endl;
+    cout << c << endl;
     clock_gettime(CLOCK_MONOTONIC, &finish);
 
     elapsed = (finish.tv_sec - start.tv_sec);
