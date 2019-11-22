@@ -5,18 +5,23 @@
 using namespace std;
 using namespace std::chrono;
 
+extern vector<mpz_class> input_moduli;
+
 int main(int argc, char** argv){
     struct timespec start, finish;
     double elapsed;
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    vector<mpz_class> moduli = read_moduli_from_file("data/moduli.csv");
+    input_moduli = read_moduli_from_file("data/moduli.csv");
     // 1. Compute the product tree of all Yᵢ
     cout << "-----------------------------------------------" << endl;
     cout << "Part (A) - Computing product tree of all moduli" << endl;
     cout << "-----------------------------------------------" << endl;
-    int levels = product_tree(moduli);
+    int levels = product_tree(input_moduli);
+    // Free memory held by moduli so that next part is lighter
+    vector<mpz_class>().swap(input_moduli);
+
     cout << "End Part (A)" << endl;
 
     clock_gettime(CLOCK_MONOTONIC, &finish);
@@ -44,11 +49,13 @@ int main(int argc, char** argv){
     cout << "-----------------------"<< endl;
     cout << " - Computing final GCDs" << endl;
     cout << "-----------------------"<< endl;
+    // Recover moduli
+    cout << "Sanity check: " << input_moduli.size() << " input moduli." << endl;
     mpz_class _div, _gcd;
     vector<mpz_class> gcds;
-    for(unsigned int i = 0; i < moduli.size(); i++) {
-        _div = R[i] / moduli[i];
-        _gcd = gcd(_div, moduli[i]);
+    for(unsigned int i = 0; i < input_moduli.size(); i++) {
+        _div = R[i] / input_moduli[i];
+        _gcd = gcd(_div, input_moduli[i]);
         gcds.push_back(_gcd);
     }
     cout << "Done. Compromised keys (IDs):" << endl;

@@ -3,6 +3,7 @@
 using namespace std;
 
 vector<unsigned int> filesPerFloor;
+vector<mpz_class> input_moduli;
 
 int product_tree(vector<mpz_class> X){
     cout << "Computing product tree of " << X.size() << " moduli." << endl;
@@ -14,7 +15,8 @@ int product_tree(vector<mpz_class> X){
     while (current_level.size() > 1) {
         filesPerFloor.push_back(current_level.size());
         write_level_to_file(l, current_level);
-        new_level.clear();
+        // new_level.clear();
+        vector<mpz_class>().swap(new_level);
         cout << "   Multiplying " << current_level.size() << " ints of ";
         cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
         cout << endl;
@@ -31,6 +33,10 @@ int product_tree(vector<mpz_class> X){
     filesPerFloor.push_back(current_level.size());
     write_level_to_file(l, current_level);
     cout << "Done." << endl;
+    // Free memory
+    // Technique: Swap vector with an empty vector
+    vector<mpz_class>().swap(current_level);
+    vector<mpz_class>().swap(new_level);
     return l+1;
 }
 
@@ -42,7 +48,7 @@ vector<mpz_class> remainders_squares(int levels) {
         newR.clear();
         Y.clear();
         Y = read_level_from_file(l);
-        cout << "  Computing remainders ..." << endl;
+        cout << "  Computing partial remainders ..." << endl;
         for(unsigned int i = 0; i < Y.size(); i++) {
             square = Y[i] * Y[i];
             rem = R[i/2] % square;
@@ -50,6 +56,10 @@ vector<mpz_class> remainders_squares(int levels) {
         }
         R = newR;
     }
+    input_moduli = Y;
+    // Free memory
+    vector<mpz_class>().swap(newR);
+    // vector<mpz_class>().swap(Y);
     return R;
 }
 
@@ -93,6 +103,7 @@ vector<mpz_class> read_level_from_file(int l) {
     string filename;
     mpz_t aux;
     mpz_init(aux);
+
     for(unsigned int i = 0; i < filesPerFloor[l]; i++) {
         filename = dir + to_string(i) + ".gmp";
         FILE* file = fopen(filename.c_str(), "r");
