@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     cout << "-----------------------------------------------" << endl;
     cout << "Part (A) - Computing product tree of all moduli" << endl;
     cout << "-----------------------------------------------" << endl;
-    int levels = product_tree(input_moduli);
+    int levels = product_tree(&input_moduli);
 
     cout << "End Part (A)" << endl;
 

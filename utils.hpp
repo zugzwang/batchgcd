@@ -41,9 +41,9 @@ class Modulus {
         };
 };
 
-int product_tree(std::vector<mpz_class>);
+int product_tree(std::vector<mpz_class>*);
 std::vector<mpz_class> read_moduli_from_file(std::string);
-void write_level_to_file(int l, std::vector<mpz_class> X);
+void write_level_to_file(int l, std::vector<mpz_class> *X);
 std::vector<mpz_class> read_level_from_file(int);
 std::vector<mpz_class> remainders_squares(int);
 void printvec(std::vector<mpz_class>);

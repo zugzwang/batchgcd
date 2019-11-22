@@ -5,15 +5,15 @@ using namespace std;
 vector<unsigned int> filesPerFloor;
 vector<mpz_class> input_moduli;
 
-int product_tree(vector<mpz_class> X){
-    cout << "Computing product tree of " << X.size() << " moduli." << endl;
-    vector<mpz_class> current_level = X;
+int product_tree(vector<mpz_class> *X){
+    cout << "Computing product tree of " << X->size() << " moduli." << endl;
+    vector<mpz_class> current_level = *X;
     vector<mpz_class> new_level;
     int l = 0;
     mpz_class prod;
     while (current_level.size() > 1) {
         filesPerFloor.push_back(current_level.size());
-        write_level_to_file(l, current_level);
+        write_level_to_file(l, &current_level);
         vector<mpz_class>().swap(new_level);
         cout << "   Multiplying " << current_level.size() << " ints of ";
         cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
@@ -28,12 +28,12 @@ int product_tree(vector<mpz_class> X){
         current_level = new_level;
         if (l == 0) {
             // Free leaves after using
-            vector<mpz_class>().swap(X);
+            vector<mpz_class>().swap(*X);
         }
         l ++;
     }
     filesPerFloor.push_back(current_level.size());
-    write_level_to_file(l, current_level);
+    write_level_to_file(l, &current_level);
     cout << "Done." << endl;
     // Free memory
     // Technique: Swap vector with an empty vector
@@ -58,10 +58,10 @@ vector<mpz_class> remainders_squares(int levels) {
         }
         R = newR;
     }
+    // Recover input without having to read again
     input_moduli = Y;
     // Free memory
     vector<mpz_class>().swap(newR);
-    // vector<mpz_class>().swap(Y);
     return R;
 }
 
@@ -83,16 +83,16 @@ vector<mpz_class> read_moduli_from_file(string filename) {
 	return moduli;
 }
 
-void write_level_to_file(int l, vector<mpz_class> X) {
+void write_level_to_file(int l, vector<mpz_class> *X) {
     string dir = "data/product_tree/level" + to_string(l) + "/";
     boost::filesystem::create_directory(dir.c_str());
     cout << "   Writing product tree level to " << dir << " (length ";
-    cout << X.size() << ")" << endl;
+    cout << X->size() << ")" << endl;
     string filename;
-    for(unsigned int i = 0; i < X.size(); i++) {
+    for(unsigned int i = 0; i < X->size(); i++) {
         filename = dir + to_string(i) + ".gmp";
         FILE* file = fopen(filename.c_str(), "w+");
-        mpz_out_raw(file, X[i].get_mpz_t());
+        mpz_out_raw(file, (*X)[i].get_mpz_t());
         fclose(file);
     }
 }
