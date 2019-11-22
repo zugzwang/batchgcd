@@ -6,7 +6,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <vector>
-#include <list>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <chrono>
@@ -14,6 +13,7 @@
 #include <algorithm>
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 
