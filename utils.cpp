@@ -42,45 +42,42 @@ int product_tree(vector<mpz_class> *X){
     return l+1;
 }
 
-vector<mpz_class> remainders_squares(int levels) {
-    vector<mpz_class> R, newR, Y;
+void remainders_squares(int levels, vector<mpz_class> *R) {
+    vector<mpz_class> newR, Y;
     mpz_class square, rem;
-    R = read_level_from_file(levels-1);
+    read_level_from_file(levels-1, R);
     for(int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
         vector<mpz_class>().swap(Y);
-        Y = read_level_from_file(l);
+        read_level_from_file(l, &Y);
         cout << "  Computing partial remainders ..." << endl;
         for(unsigned int i = 0; i < Y.size(); i++) {
             square = Y[i] * Y[i];
-            rem = R[i/2] % square;
+            rem = (*R)[i/2] % square;
             newR.push_back(rem);
         }
-        R = newR;
+        *R = newR;
     }
     // Recover input without having to read again
     input_moduli = Y;
     // Free memory
     vector<mpz_class>().swap(newR);
-    return R;
 }
 
-vector<mpz_class> read_moduli_from_file(string filename) {
+void read_moduli_from_file(string filename) {
     cout << "Reading moduli from " << filename << endl;
     ifstream file(filename);
-    vector<mpz_class> moduli;
 	string line = "";
 	// Iterate through each line and split the content using delimeter
 	while (getline(file, line))
 	{
         Modulus mod(line);
-        moduli.push_back(mod.n);
+        input_moduli.push_back(mod.n);
 	}
 	// Close the File
 	file.close();
 
-    cout << "Done. Read " << moduli.size() << " moduli" << endl;
-	return moduli;
+    cout << "Done. Read " << input_moduli.size() << " moduli" << endl;
 }
 
 void write_level_to_file(int l, vector<mpz_class> *X) {
@@ -97,27 +94,25 @@ void write_level_to_file(int l, vector<mpz_class> *X) {
     }
 }
 
-vector<mpz_class> read_level_from_file(int l) {
+void read_level_from_file(int l, vector<mpz_class> *moduli) {
     string dir = "data/product_tree/level" + to_string(l) + "/";
     cout << "   Reading product tree level from " << dir << endl;
     ifstream file(dir);
-    vector<mpz_class> moduli;
+    vector<mpz_class>().swap(*moduli);
     string filename;
-    mpz_t aux;
-    mpz_init(aux);
+    mpz_t mod;
+    mpz_init(mod);
 
     for(unsigned int i = 0; i < filesPerFloor[l]; i++) {
         filename = dir + to_string(i) + ".gmp";
         FILE* file = fopen(filename.c_str(), "r");
-        mpz_inp_raw(aux, file);
-        mpz_class mod = mpz_class(aux);
+        mpz_inp_raw(mod, file);
         fclose(file);
-        moduli.push_back(mod);
+        moduli->push_back(mpz_class(mod));
     }
-    cout << "   ok, read " << moduli.size() << " ints of ";
-    cout << mpz_sizeinbase(moduli[0].get_mpz_t(), 2) << " bits" << endl;
-
-	return moduli;
+    mpz_clear(mod);
+    cout << "   ok, read " << moduli->size() << " ints of ";
+    cout << mpz_sizeinbase((*moduli)[0].get_mpz_t(), 2) << " bits" << endl;
 }
 
 void write_level_to_file_str(int l, vector<mpz_class> X) {

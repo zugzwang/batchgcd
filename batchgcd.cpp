@@ -13,7 +13,7 @@ int main(int argc, char** argv){
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    input_moduli = read_moduli_from_file("data/moduli.csv");
+    read_moduli_from_file("data/moduli.csv");
     // 1. Compute the product tree of all Yᵢ
     cout << "-----------------------------------------------" << endl;
     cout << "Part (A) - Computing product tree of all moduli" << endl;
@@ -33,7 +33,8 @@ int main(int argc, char** argv){
     cout << "------------------------------------------------" << endl;
     cout << "Part (B) - Computing the remainders of Z mod Xᵢ²" << endl;
     cout << "------------------------------------------------" << endl;
-    vector<mpz_class> R = remainders_squares(levels);
+    vector<mpz_class> R;
+    remainders_squares(levels, &R);
     cout << "End Part (B)" << endl;
     clock_gettime(CLOCK_MONOTONIC, &finish);
 
@@ -48,17 +49,15 @@ int main(int argc, char** argv){
     cout << " - Computing final GCDs" << endl;
     cout << "-----------------------"<< endl;
     cout << "Sanity check: " << input_moduli.size() << " input moduli." << endl;
-    mpz_class _div, _gcd;
     vector<mpz_class> gcds;
     for(unsigned int i = 0; i < input_moduli.size(); i++) {
-        _div = R[i] / input_moduli[i];
-        _gcd = gcd(_div, input_moduli[i]);
-        gcds.push_back(_gcd);
+        R[i] = R[i] / input_moduli[i];
+        R[i] = gcd(R[i], input_moduli[i]);
     }
     cout << "Done. Compromised keys (IDs):" << endl;
     int c = 0;
-    for(int i = 0; i < int(gcds.size()); i++) {
-        if(gcds[i] != 1) {
+    for(int i = 0; i < int(R.size()); i++) {
+        if(R[i] != 1) {
             c ++ ;
         }
     }
