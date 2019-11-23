@@ -47,8 +47,8 @@ vector<mpz_class> remainders_squares(int levels) {
     mpz_class square, rem;
     R = read_level_from_file(levels-1);
     for(int l = levels-2; l >= 0; l--) {
-        newR.clear();
-        Y.clear();
+        vector<mpz_class>().swap(newR);
+        vector<mpz_class>().swap(Y);
         Y = read_level_from_file(l);
         cout << "  Computing partial remainders ..." << endl;
         for(unsigned int i = 0; i < Y.size(); i++) {

@@ -47,7 +47,6 @@ int main(int argc, char** argv){
     cout << "-----------------------"<< endl;
     cout << " - Computing final GCDs" << endl;
     cout << "-----------------------"<< endl;
-    // Recover moduli
     cout << "Sanity check: " << input_moduli.size() << " input moduli." << endl;
     mpz_class _div, _gcd;
     vector<mpz_class> gcds;
