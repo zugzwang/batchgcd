@@ -3,7 +3,6 @@
 using namespace std;
 
 vector<unsigned int> filesPerFloor;
-vector<mpz_class> input_moduli;
 
 int product_tree(vector<mpz_class> *X){
     cout << "Computing product tree of " << X->size() << " moduli." << endl;
@@ -64,7 +63,7 @@ void remainders_squares(int levels, vector<mpz_class> *R) {
     vector<mpz_class>().swap(newR);
 }
 
-void read_moduli_from_file(string filename) {
+void read_moduli_from_file(string filename, vector<mpz_class> *input_moduli) {
     cout << "Reading moduli from " << filename << endl;
     ifstream file(filename);
 	string line = "";
@@ -72,12 +71,12 @@ void read_moduli_from_file(string filename) {
 	while (getline(file, line))
 	{
         Modulus mod(line);
-        input_moduli.push_back(mod.n);
+        input_moduli->push_back(mod.n);
 	}
 	// Close the File
 	file.close();
 
-    cout << "Done. Read " << input_moduli.size() << " moduli" << endl;
+    cout << "Done. Read " << input_moduli->size() << " moduli" << endl;
 }
 
 void write_level_to_file(int l, vector<mpz_class> *X) {
@@ -159,12 +158,4 @@ vector<mpz_class> read_level_from_file_str(int l) {
     cout << mpz_sizeinbase(moduli[0].get_mpz_t(), 2) << " bits" << endl;
 
 	return moduli;
-}
-
-// Helper func
-void printvec(vector<mpz_class> X) {
-    for(auto const& val: X){
-        cout << val.get_str() << " ";
-    }
-    cout << endl;
 }

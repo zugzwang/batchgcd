@@ -1,73 +1,81 @@
+/*
+ * C++ implementation of the BatchGCD algorithm
+ * --------------------------------------------
+ *
+ *  The batch GCD algorithm, created by Daniel Bernstein [1], allows the
+ *  computation of pairwise GCDs of a list of integers in quasilinear time.
+ *
+ *  This implementation uses the C++ wrapper around GMP arbitrary precision
+ *  library.
+ *
+ *  Feel free to reproduce
+ */
 #include "utils.hpp"
 
-#define COUT std::cout.width(K);std::cout<<
-
 using namespace std;
-using namespace std::chrono;
-
-extern vector<mpz_class> input_moduli;
 
 int main(int argc, char** argv){
+
+    // Set timer
     struct timespec start, finish;
-    double elapsed;
+    double elapsedA, elapsedB, elapsedC;
 
+    cout << "----------------------------------------------" << endl;
+    cout << "Part (A) - Compute product tree of all moduli " << endl;
+    cout << "----------------------------------------------" << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
-
-    read_moduli_from_file("data/moduli.csv");
-    // 1. Compute the product tree of all Yᵢ
-    cout << "-----------------------------------------------" << endl;
-    cout << "Part (A) - Computing product tree of all moduli" << endl;
-    cout << "-----------------------------------------------" << endl;
+    vector<mpz_class> input_moduli;
+    read_moduli_from_file("data/moduli.csv", &input_moduli);
     int levels = product_tree(&input_moduli);
-
-    cout << "End Part (A)" << endl;
-
     clock_gettime(CLOCK_MONOTONIC, &finish);
+    cout << "End Part (A)" << endl;
+    elapsedA = finish.tv_sec - start.tv_sec;
+    elapsedA += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    cout << "Time elapsed (s): " << elapsedA << endl << endl;
 
-    elapsed = (finish.tv_sec - start.tv_sec);
-    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-    cout << "Time elapsed (s): " << elapsed << endl;
-
+    cout << "----------------------------------------------" << endl;
+    cout << "Part (B) - Compute the remainders of Z mod Xᵢ²" << endl;
+    cout << "----------------------------------------------" << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
-    // 2. Compute the remainders of Z mod Xᵢ²
-    cout << "------------------------------------------------" << endl;
-    cout << "Part (B) - Computing the remainders of Z mod Xᵢ²" << endl;
-    cout << "------------------------------------------------" << endl;
     vector<mpz_class> R;
     remainders_squares(levels, &R);
     cout << "End Part (B)" << endl;
     clock_gettime(CLOCK_MONOTONIC, &finish);
+    elapsedB = (finish.tv_sec - start.tv_sec);
+    elapsedB += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    cout << "Time elapsed (s): " << elapsedB << endl << endl;
 
-    elapsed = (finish.tv_sec - start.tv_sec);
-    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-    cout << "Time elapsed (s): " << elapsed << endl;
-
+    cout << "-----------------------------------------------" << endl;
+    cout << " - Computing final GCDs (remᵢ<- remᵢ/Xᵢ mod Xᵢ)" << endl;
+    cout << "-----------------------------------------------" << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
-    // 3. Divide the ith remainder by Xᵢ, and compute the gcd of the result with
-	// Xᵢ.
-    cout << "-----------------------"<< endl;
-    cout << " - Computing final GCDs" << endl;
-    cout << "-----------------------"<< endl;
-    cout << "Re reading moduli" << endl;
+    cout << "Re-reading moduli (destroyed to use memory in part B)" << endl;
     read_level_from_file(0, &input_moduli);
-    cout << "Sanity check: " << input_moduli.size() << " input moduli." << endl;
-    vector<mpz_class> gcds;
     for(unsigned int i = 0; i < input_moduli.size(); i++) {
         R[i] = R[i] / input_moduli[i];
         R[i] = gcd(R[i], input_moduli[i]);
     }
-    cout << "Done. Compromised keys (IDs):" << endl;
-    int c = 0;
-    for(int i = 0; i < int(R.size()); i++) {
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    elapsedC = (finish.tv_sec - start.tv_sec);
+    elapsedC += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    cout << "|-------------|" << endl;
+    cout << "|-- Results --|" << endl;
+    cout << "|-------------|" << endl << endl;
+    vector<mpz_class> compromised;
+    for(int i = 0; i < int(input_moduli.size()); i++) {
         if(R[i] != 1) {
-            c ++ ;
+            compromised.push_back(R[i]);
         }
     }
-    cout << c << endl;
-    clock_gettime(CLOCK_MONOTONIC, &finish);
-
-    elapsed = (finish.tv_sec - start.tv_sec);
-    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-    cout << "Time elapsed (s): " << elapsed << endl;
+    cout << "Amount of compromised keys" << endl;
+    cout << compromised.size() << endl;
+    cout << "Total time elapsed (s): ";
+    int totalSec = int(elapsedA + elapsedB + elapsedC);
+    int totalMin = totalSec / 60;
+    int totalHour = totalMin / 60;
+    totalSec %= 60;
+    totalMin %= 60;
+    cout << totalHour << "h " << totalMin << "m " << totalSec << "s " << endl;
     return 0;
 }

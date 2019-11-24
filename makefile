@@ -1,5 +1,5 @@
 CC      = g++
-CFLAGS  = -Wall -O3 -std=c++0x -lgmp -lboost_filesystem -lboost_system -g
+CFLAGS  = -Wall -O3 -std=c++17 -lgmp -lboost_filesystem -lboost_system -g
 RM      = rm -f
 
 default: batchgcd
