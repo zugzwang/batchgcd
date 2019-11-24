@@ -126,12 +126,13 @@ int main(int argc, char** argv){
     cout << "False positives: " << false_positives << endl;
     cout << "Writing compromised IDs to file..." << endl;
     string line = "";
+    ofstream file;
+    file.open("results.csv");
     for(unsigned int i = 0; i < compromised.size(); i++) {
-        FILE* file = fopen("out.csv", "w+");
         line = to_string(compromised[i]) + "\n";
-        fwrite(file, line);
-        fclose(file);
+        file << line;
     }
+    file.close();
     cout << "Done, bye." << endl;
     return 0;
 }

@@ -21,7 +21,7 @@ void read_moduli_from_csv( \
 	{
             boost::algorithm::split(vec, line, boost::is_any_of(","));
             n = mpz_class(vec[2]);
-            IDs->push_back(stoi(vec[2]));
+            IDs->push_back(stoi(vec[0]));
             moduli->push_back(n);
 	}
 	// Close the File
