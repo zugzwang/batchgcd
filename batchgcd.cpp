@@ -1,6 +1,5 @@
 /*
  * TODO:
- *  - Check results at the end
  *  - Tests
  *
  * --------------------------------------------
@@ -112,7 +111,7 @@ int main(int argc, char** argv){
     // sets.
     for(int i = 0; i < int(input_moduli.size()); i++) {
         if(R[i] != 1) {
-            if(input_moduli[i] % R[i] != 0) {
+            if(R[i] == 0 || input_moduli[i] % R[i] != 0) {
                 false_positives += 1;
             }
             else {
