@@ -11,10 +11,10 @@
 using namespace std;
 
 int product_tree(std::vector<mpz_class>*);
-void read_moduli_from_file(std::string, vector<mpz_class> *);
+void read_moduli_from_csv(std::string, vector<mpz_class> *);
 void write_level_to_file(int l, std::vector<mpz_class> *);
-void read_variable_from_file(int level, int index, mpz_class &x);
 void read_level_from_file(int, std::vector<mpz_class> *);
+void read_variable_from_file(int level, int index, mpz_class &x);
 void remainders_squares(int, std::vector<mpz_class> *);
 
 class Modulus {
