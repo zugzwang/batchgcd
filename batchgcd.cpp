@@ -48,6 +48,8 @@ int main(int argc, char** argv){
     cout << "-----------------------"<< endl;
     cout << " - Computing final GCDs" << endl;
     cout << "-----------------------"<< endl;
+    cout << "Re reading moduli" << endl;
+    read_level_from_file(0, &input_moduli);
     cout << "Sanity check: " << input_moduli.size() << " input moduli." << endl;
     vector<mpz_class> gcds;
     for(unsigned int i = 0; i < input_moduli.size(); i++) {

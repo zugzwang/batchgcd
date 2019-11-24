@@ -10,7 +10,7 @@ int product_tree(vector<mpz_class> *X){
     vector<mpz_class> current_level = *X;
     vector<mpz_class> new_level;
     int l = 0;
-    mpz_class prod;
+    mpz_class *prod = new(mpz_class);
     while (current_level.size() > 1) {
         filesPerFloor.push_back(current_level.size());
         write_level_to_file(l, &current_level);
@@ -19,8 +19,8 @@ int product_tree(vector<mpz_class> *X){
         cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
         cout << endl;
         for (unsigned int i = 0; i < current_level.size()-1; i+=2) {
-            prod = current_level[i] * current_level[i+1];
-            new_level.push_back(prod);
+            *prod = current_level[i] * current_level[i+1];
+            new_level.push_back(*prod);
         }
         if (current_level.size()%2 != 0) {
             new_level.push_back(current_level.back());
@@ -32,6 +32,7 @@ int product_tree(vector<mpz_class> *X){
         }
         l ++;
     }
+    delete prod;
     filesPerFloor.push_back(current_level.size());
     write_level_to_file(l, &current_level);
     cout << "Done." << endl;
@@ -43,23 +44,22 @@ int product_tree(vector<mpz_class> *X){
 }
 
 void remainders_squares(int levels, vector<mpz_class> *R) {
-    vector<mpz_class> newR, Y;
-    mpz_class square, rem;
+    vector<mpz_class> newR;
     read_level_from_file(levels-1, R);
     for(int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
-        vector<mpz_class>().swap(Y);
-        read_level_from_file(l, &Y);
-        cout << "  Computing partial remainders ..." << endl;
-        for(unsigned int i = 0; i < Y.size(); i++) {
-            square = Y[i] * Y[i];
-            rem = (*R)[i/2] % square;
-            newR.push_back(rem);
+        cout << "  Computing partial remainder ";
+        cout << l << " of " << levels-1 << endl;
+        unsigned int lengthY = filesPerFloor[l];
+        mpz_class square;
+        for(unsigned int i = 0; i < lengthY; i++) {
+            read_variable_from_file(l, i, square);
+            square *= square;
+            square = (*R)[i/2] % square;
+            newR.push_back(square);
         }
         *R = newR;
     }
-    // Recover input without having to read again
-    input_moduli = Y;
     // Free memory
     vector<mpz_class>().swap(newR);
 }
@@ -92,6 +92,19 @@ void write_level_to_file(int l, vector<mpz_class> *X) {
         mpz_out_raw(file, (*X)[i].get_mpz_t());
         fclose(file);
     }
+}
+
+void read_variable_from_file(int level, int index, mpz_class &x) {
+    string dir = "data/product_tree/level" + to_string(level) + "/";
+    string filename = dir + to_string(index) + ".gmp";
+    mpz_t y;
+    mpz_init(y);
+
+    FILE* file = fopen(filename.c_str(), "r");
+    mpz_inp_raw(y, file);
+    fclose(file);
+    x = mpz_class(y);
+    mpz_clear(y);
 }
 
 void read_level_from_file(int l, vector<mpz_class> *moduli) {
