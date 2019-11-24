@@ -9,20 +9,24 @@ vector<unsigned int> filesPerFloor;
 /* read_moduli_from_csv allocates and initializes the moduli referenced by
  * input_moduli, from the given file.
  */
-void read_moduli_from_csv(string filename, vector<mpz_class> *input_moduli) {
+void read_moduli_from_csv( \
+        string filename, vector<mpz_class> *moduli, vector<int>*IDs) {
     cout << "Reading moduli from " << filename << endl;
     ifstream file(filename);
 	string line = "";
 	// Iterate through each line and split the content using delimeter
+    vector<string> vec;
+    mpz_class n;
 	while (getline(file, line))
 	{
-        Modulus mod(line);
-        input_moduli->push_back(mod.n);
+            boost::algorithm::split(vec, line, boost::is_any_of(","));
+            n = mpz_class(vec[2]);
+            IDs->push_back(stoi(vec[2]));
+            moduli->push_back(n);
 	}
 	// Close the File
 	file.close();
-
-    cout << "Done. Read " << input_moduli->size() << " moduli" << endl;
+    cout << "Done. Read " << moduli->size() << " moduli" << endl;
 }
 
 /*
@@ -33,7 +37,7 @@ void read_moduli_from_csv(string filename, vector<mpz_class> *input_moduli) {
  *
  * Warning: Input IS DESTROYED, in order to use the occupied RAM if necessary.
  */
-int product_tree(vector<mpz_class> *X){
+int product_tree(vector<mpz_class> *X) {
     cout << "Computing product tree of " << X->size() << " moduli." << endl;
     vector<mpz_class> current_level, new_level;
     mpz_class *prod = new(mpz_class);

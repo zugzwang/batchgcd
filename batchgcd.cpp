@@ -1,8 +1,6 @@
 /*
- *
  * TODO:
  *  - Check results at the end
- *  - Use Modulus class, finally
  *  - Tests
  *
  * --------------------------------------------
@@ -18,12 +16,12 @@
  *  library, since it needs to handle potentially huge numbers. It favors
  *  writing intermediate variables to disk, so beware that, assuming that all
  *  'n' input integers are of bitLength 'l', it efficiently writes ~2n
- *  separate files, using total disk memory
+ *  separate files, using a total disk memory of
  *
  *                               M = l * n * log(n)
  *
- *  bits to disk. That's 10.7 GB of information in around 4 million files if
- *  you're targeting 2 million 2048-bit integers. Please do the numbers and use
+ *  bits. That is 10.7 GB of information in around 4 million files if
+ *  you are targeting 2 million 2048-bit integers. Please do the numbers and use
  *  AT YOUR OWN RISK.
  *
  *  If you're targeting RSA keys, which is the main use-case of this algorithm
@@ -63,7 +61,8 @@ int main(int argc, char** argv){
     cout << "--------------------------------------------------------" << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
     vector<mpz_class> input_moduli;
-    read_moduli_from_csv("data/moduli.csv", &input_moduli);
+    vector<int> IDs;
+    read_moduli_from_csv("data/moduli.csv", &input_moduli, &IDs);
     int levels = product_tree(&input_moduli);
     clock_gettime(CLOCK_MONOTONIC, &finish);
     cout << "End Part (A)" << endl;
@@ -97,17 +96,10 @@ int main(int argc, char** argv){
     elapsedC = (finish.tv_sec - start.tv_sec);
     elapsedC += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 
+
     cout << "|-------------|" << endl;
     cout << "|-- Results --|" << endl;
     cout << "|-------------|" << endl << endl;
-    vector<mpz_class> compromised;
-    for(int i = 0; i < int(input_moduli.size()); i++) {
-        if(R[i] != 1) {
-            compromised.push_back(R[i]);
-        }
-    }
-    cout << "Amount of moduli sharing factors" << endl;
-    cout << compromised.size() << endl;
     cout << "Total time elapsed (s): ";
     int totalSec = int(elapsedA + elapsedB + elapsedC);
     int totalMin = totalSec / 60;
@@ -115,5 +107,31 @@ int main(int argc, char** argv){
     totalSec %= 60;
     totalMin %= 60;
     cout << totalHour << "h " << totalMin << "m " << totalSec << "s " << endl;
+    cout << "Verifying correctness before announcing..." << endl;
+    vector<int> compromised;
+    int false_positives = 0;
+    // False positives should not exist, this is a sanity check for large input
+    // sets.
+    for(int i = 0; i < int(input_moduli.size()); i++) {
+        if(R[i] != 1) {
+            if(input_moduli[i] % R[i] != 0) {
+                false_positives += 1;
+            }
+            else {
+                compromised.push_back(IDs[i]);
+            }
+        }
+    }
+    cout << "Amount of compromised moduli: " << compromised.size() << endl;
+    cout << "False positives: " << false_positives << endl;
+    cout << "Writing compromised IDs to file..." << endl;
+    string line = "";
+    for(unsigned int i = 0; i < compromised.size(); i++) {
+        FILE* file = fopen("out.csv", "w+");
+        line = to_string(compromised[i]) + "\n";
+        fwrite(file, line);
+        fclose(file);
+    }
+    cout << "Done, bye." << endl;
     return 0;
 }
