@@ -87,18 +87,25 @@ int product_tree(vector<mpz_class> *X) {
  * moduli and Z is their product. This list is written to the input address.
  */
 void remainders_squares(int levels, vector<mpz_class> *R) {
+    remainders_squares_fast(levels, R);
+}
+
+// Straightforward but slow, since the internal variable Z is potentially huge.
+void remainders_squares_simple(int levels, vector<mpz_class> *R) {
     mpz_class Z;
     read_level_from_file(0, R);
     read_variable_from_file(levels-1, 0, Z);
+    cout << "   Computing partial remainders ";
     for(unsigned int i = 0; i < R->size(); i++) {
         (*R)[i] *= (*R)[i];
         (*R)[i] = Z % (*R)[i];
     }
+    delete &Z;
 }
 
 /* remainders_squares_fast is Bernstein suggestion. It uses more RAM.
  * The temporary vector newR uses the same amount of memory as R, and the
- * internal 'square' needs the double of this amount in the firs iteration
+ * internal 'square' needs the double of this amount in the first iteration
  * (its first value is Z^2).
  * Consequently, the first iteration is the most tense part of the algorithm in
  * terms of memory.

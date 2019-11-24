@@ -83,7 +83,7 @@ int main(int argc, char** argv){
     cout << "Time elapsed (s): " << elapsedB << endl << endl;
 
     cout << " ------------------------------------------------------  " << endl;
-    cout << "|Part (C) - Compute final GCDs (remᵢ<- remᵢ/Xᵢ mod Xᵢ) |" << endl;
+    cout << "|Part (C) - Compute final GCDs (remᵢ <- remᵢ/Xᵢ mod Xᵢ) |" << endl;
     cout << " ------------------------------------------------------  " << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
     cout << "Re-reading moduli (were destroyed in part B)" << endl;
