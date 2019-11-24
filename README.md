@@ -39,7 +39,7 @@ disk directly, but they will of course be on your RAM) and more importantly,
 **informing compromised key owners** so that they have a chance to revoke their
 keys / fix their implementations.
 
-Please **don't** use this library if you're targeting a set of keys with
+Please **don't** use this code if you're targeting a set of keys with
 bad intentions.
 
 Suggestions/comments/questions are more than welcome.
