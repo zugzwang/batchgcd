@@ -56,9 +56,9 @@ int main(int argc, char** argv){
     struct timespec start, finish;
     double elapsedA, elapsedB, elapsedC;
 
-    cout << "--------------------------------------------------------" << endl;
-    cout << "Part (A) - Compute product Z and product tree of moduli " << endl;
-    cout << "--------------------------------------------------------" << endl;
+    cout << " --------------------------------------------------- " << endl;
+    cout << "| Part (A) - Product 'Z' and product tree of moduli |" << endl;
+    cout << " --------------------------------------------------- " << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
     vector<mpz_class> input_moduli;
     vector<int> IDs;
@@ -70,9 +70,9 @@ int main(int argc, char** argv){
     elapsedA += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
     cout << "Time elapsed (s): " << elapsedA << endl << endl;
 
-    cout << "---------------------------------------------------" << endl;
-    cout << "Part (B) - Compute the remainders remᵢ <- Z mod Xᵢ²" << endl;
-    cout << "---------------------------------------------------" << endl;
+    cout << " ----------------------------------------------------- " << endl;
+    cout << "| Part (B) - Compute the remainders remᵢ <- Z mod Xᵢ² |" << endl;
+    cout << " ----------------------------------------------------- " << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
     vector<mpz_class> R;
     remainders_squares(levels, &R);
@@ -82,9 +82,9 @@ int main(int argc, char** argv){
     elapsedB += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
     cout << "Time elapsed (s): " << elapsedB << endl << endl;
 
-    cout << "-----------------------------------------------------" << endl;
-    cout << "Part (C) - Compute final GCDs (remᵢ<- remᵢ/Xᵢ mod Xᵢ)" << endl;
-    cout << "-----------------------------------------------------" << endl;
+    cout << " ------------------------------------------------------  " << endl;
+    cout << "|Part (C) - Compute final GCDs (remᵢ<- remᵢ/Xᵢ mod Xᵢ) |" << endl;
+    cout << " ------------------------------------------------------  " << endl;
     clock_gettime(CLOCK_MONOTONIC, &start);
     cout << "Re-reading moduli (were destroyed in part B)" << endl;
     read_level_from_file(0, &input_moduli);
@@ -97,9 +97,6 @@ int main(int argc, char** argv){
     elapsedC += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 
 
-    cout << "|-------------|" << endl;
-    cout << "|-- Results --|" << endl;
-    cout << "|-------------|" << endl << endl;
     cout << "Total time elapsed (s): ";
     int totalSec = int(elapsedA + elapsedB + elapsedC);
     int totalMin = totalSec / 60;
@@ -107,7 +104,8 @@ int main(int argc, char** argv){
     totalSec %= 60;
     totalMin %= 60;
     cout << totalHour << "h " << totalMin << "m " << totalSec << "s " << endl;
-    cout << "Verifying correctness before announcing..." << endl;
+
+    cout << "Verifying correctness before announcing results" << endl << endl;
     vector<int> compromised;
     int false_positives = 0;
     // False positives should not exist, this is a sanity check for large input
@@ -122,6 +120,9 @@ int main(int argc, char** argv){
             }
         }
     }
+    cout << "    ------------- " << endl;
+    cout << "   |-- Results --|" << endl;
+    cout << "    ------------- " << endl << endl;
     cout << "Amount of compromised moduli: " << compromised.size() << endl;
     cout << "False positives: " << false_positives << endl;
     cout << "Writing compromised IDs to file..." << endl;

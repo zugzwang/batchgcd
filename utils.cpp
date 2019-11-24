@@ -82,15 +82,28 @@ int product_tree(vector<mpz_class> *X) {
     return l+1;
 }
 
+
 /* remainders_squares computes the list remᵢ <- Z mod Xᵢ² where X are the
  * moduli and Z is their product. This list is written to the input address.
+ */
+void remainders_squares(int levels, vector<mpz_class> *R) {
+    mpz_class Z;
+    read_level_from_file(0, R);
+    read_variable_from_file(levels-1, 0, Z);
+    for(unsigned int i = 0; i < R->size(); i++) {
+        (*R)[i] *= (*R)[i];
+        (*R)[i] = Z % (*R)[i];
+    }
+}
+
+/* remainders_squares_fast is Bernstein suggestion. It uses more RAM.
  * The temporary vector newR uses the same amount of memory as R, and the
  * internal 'square' needs the double of this amount in the firs iteration
  * (its first value is Z^2).
  * Consequently, the first iteration is the most tense part of the algorithm in
  * terms of memory.
  */
-void remainders_squares(int levels, vector<mpz_class> *R) {
+void remainders_squares_fast(int levels, vector<mpz_class> *R) {
     vector<mpz_class> newR;
     read_level_from_file(levels-1, R);
     // Sanity check
@@ -100,7 +113,7 @@ void remainders_squares(int levels, vector<mpz_class> *R) {
     }
     for(int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
-        cout << "  Computing partial remainder ";
+        cout << "   Computing partial remainders ";
         cout << levels-2-l << " of " << levels-2 << endl;
         unsigned int lengthY = filesPerFloor[l];
         mpz_class square;
@@ -124,8 +137,8 @@ void remainders_squares(int levels, vector<mpz_class> *R) {
 void write_level_to_file(int l, vector<mpz_class> *X) {
     string dir = "data/product_tree/level" + to_string(l) + "/";
     boost::filesystem::create_directory(dir.c_str());
-    cout << "   Writing product tree level to " << dir << " (length ";
-    cout << X->size() << ")" << endl;
+    cout << "   Writing product tree level to " << dir << " (";
+    cout << X->size() << " files)" << endl;
     string filename;
     for(unsigned int i = 0; i < X->size(); i++) {
         filename = dir + to_string(i) + ".gmp";
