@@ -22,7 +22,7 @@
  *
  *                               M = l * n * log(n)
  *
- *  bits to disk. That's 10.7 GB of information in around 4 million of files if
+ *  bits to disk. That's 10.7 GB of information in around 4 million files if
  *  you're targeting 2 million 2048-bit integers. Please do the numbers and use
  *  AT YOUR OWN RISK.
  *
