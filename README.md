@@ -32,7 +32,7 @@ bits. That's 10.7 GB of information in around 4 million separate files if
 you're targeting 2 million 2048-bit integers. Please **do the numbers** and use/modify
 **AT YOUR OWN RISK**.
 
-If you're targeting RSA public keys, which is the main use-case of this algorithm
+If you are targeting RSA public keys, which is the main use-case of this algorithm
 and the reason that integers within the code are referred to as 'moduli', please
 consider **not storing/reading the factors** (the library won't write them to
 disk directly, but they will of course be on your RAM) and more importantly,
