@@ -49,7 +49,7 @@ void remainders_squares(int levels, vector<mpz_class> *R) {
     for(int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
         cout << "  Computing partial remainder ";
-        cout << l << " of " << levels-1 << endl;
+        cout << levels-2-l << " of " << levels-2 << endl;
         unsigned int lengthY = filesPerFloor[l];
         mpz_class square;
         for(unsigned int i = 0; i < lengthY; i++) {
