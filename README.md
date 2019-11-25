@@ -33,18 +33,7 @@ you're targeting 2 million 2048-bit integers. Please **do the numbers** and use/
 **AT YOUR OWN RISK**.
 
 Also, as claimed in [Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices](https://factorable.net/weakkeys12.extended.pdf), GMP has a memory limitation on its raw I/O of integers, which is the most efficient way of writing to disk. This limits the amount keys that the algorithm can handle. If you need more, consider patching the GMP library or contacting me.
-
-If you are targeting RSA public keys, which is the main use-case of this algorithm
-and the reason that integers within the code are referred to as 'moduli', please
-consider **not storing/reading the factors** (the library won't write them to
-disk directly, but they will of course be on your RAM) and more importantly,
-**informing compromised key owners** so that they have a chance to revoke their
-keys / fix their implementations.
-
-Please **don't** use this code if you're targeting a set of keys with
-bad intentions.
-
-Suggestions/comments/questions are more than welcome.
+[//]: # (If you are targeting RSA public keys, which is the main use-case of this algorithm and the reason that integers within the code are referred to as 'moduli', please consider **not storing/reading the factors** (the library won't write them to disk directly, but they will of course be on your RAM /closeparen and more importantly, **informing compromised key owners** so that they have a chance to revoke their keys / fix their implementations. Please **don't** use this code if you're targeting a set of keys with bad intentions. Suggestions/comments/questions are more than welcome.)
 
 ## Benchmarks
 (TODO)
