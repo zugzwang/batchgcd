@@ -32,6 +32,8 @@ bits. That's 10.7 GB of information in around 4 million separate files if
 you're targeting 2 million 2048-bit integers. Please **do the numbers** and use/modify
 **AT YOUR OWN RISK**.
 
+Also, as claimed in [Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices](https://factorable.net/weakkeys12.extended.pdf), GMP has a memory limitation on its raw I/O of integers, which is the most efficient way of writing to disk. This limits the amount keys that the algorithm can handle. If you need more, consider patching the GMP library or contacting me.
+
 If you are targeting RSA public keys, which is the main use-case of this algorithm
 and the reason that integers within the code are referred to as 'moduli', please
 consider **not storing/reading the factors** (the library won't write them to
