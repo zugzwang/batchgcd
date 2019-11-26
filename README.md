@@ -10,12 +10,16 @@
 
 You need `g++, cmake, gmp, boost` installed. 
 
-Clone and `cd` to the repo. Inside the `build` folder, create a `./data/product_tree/` directory.
+Clone and `cd` to the repo. Inside the `build` folder, create a `/data/product_tree/` directory.
 Put a file named `moduli.csv` inside the `data` folder, containing your integers in the following format
 ```
 <ID>,<bit length>,<modulus in base 10>\n
 ```
-`cd` to `build`, compile with `make`, and **after reading the disclaimer below**, run with `./batchgcd`.
+Now `cd` to `build`, run 
+```cmake -G "Unix Makefiles" ..```
+(replace `Unix Makefiles` by another generator name if needed, for this run `cmake --help`).
+
+Compile with `make`, and **after reading the disclaimer below**, run with `./batchgcd`.
 
 ## Disclaimer
 Feel free to use, alter, or reproduce this implementation **AT YOUR OWN RISK**.
