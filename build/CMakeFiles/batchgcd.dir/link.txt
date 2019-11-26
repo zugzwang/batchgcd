@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/batchgcd.dir/src/batchgcd.cpp.o CMakeFiles/batchgcd.dir/src/utils.cpp.o  -o batchgcd -lgmp -lgmpxx /usr/lib/x86_64-linux-gnu/libboost_system.so /usr/lib/x86_64-linux-gnu/libboost_filesystem.so 
