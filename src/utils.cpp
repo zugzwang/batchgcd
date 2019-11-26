@@ -193,3 +193,4 @@ void read_level_from_file(int l, vector<mpz_class> *moduli) {
     cout << "   ok, read " << moduli->size() << " ints of ";
     cout << mpz_sizeinbase((*moduli)[0].get_mpz_t(), 2) << " bits" << endl;
 }
+

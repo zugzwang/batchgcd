@@ -49,6 +49,7 @@ using namespace std;
  * - A folder ./data/product_tree/ which will hold intermediate variables
  *
  */
+
 int main(int argc, char** argv){
 
     // Set timer
