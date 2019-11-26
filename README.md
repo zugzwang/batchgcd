@@ -8,16 +8,14 @@
 
 ## Usage
 
-You need `g++, gmp, boost` installed. 
+You need `g++, cmake, gmp, boost` installed. 
 
-Clone and `cd` to the repo. Run 
-```make install``` 
-(This will only create the `./data/product_tree` folder.)
+Clone and `cd` to the repo. Inside the `build` folder, create a `./data/product_tree/` directory.
 Put a file named `moduli.csv` inside the `data` folder, containing your integers in the following format
 ```
 <ID>,<bit length>,<modulus in base 10>\n
 ```
-Compile with `make`, and **after reading the disclaimer below**, run with `./batchgcd.o`.
+`cd` to `build`, compile with `make`, and **after reading the disclaimer below**, run with `./batchgcd`.
 
 ## Disclaimer
 Feel free to use, alter, or reproduce this implementation **AT YOUR OWN RISK**.
