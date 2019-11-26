@@ -4,7 +4,7 @@
 
 ## Description 
 
-(C++)+GMP implementation of the [Batch GCD algorithm](http://facthacks.cr.yp.to/batchgcd.html), by [Daniel Bernstein](https://cr.yp.to/djb.html). This algorithm, based on [How To Find Smooth Parts Of Integers](https://cr.yp.to/factorization/smoothparts-20040510.pdf), allows to compute pairwise GCDs of a list of integers. See e.g. [this well-known experiment](https://factorable.net).
+(C++)+GMP implementation of the [Batch GCD algorithm](http://facthacks.cr.yp.to/batchgcd.html), by [Daniel Bernstein](https://cr.yp.to/djb.html). This algorithm, described in [How To Find Smooth Parts Of Integers](https://cr.yp.to/factorization/smoothparts-20040510.pdf), allows to compute pairwise GCDs of a list of integers. See e.g. [this well-known experiment](https://factorable.net).
 
 ## Usage
 
@@ -31,16 +31,6 @@ separate files, using total disk memory of
 bits. That's 10.7 GB of information in around 4 million separate files if
 you're targeting 2 million 2048-bit integers. Please **do the numbers** and use/modify
 **AT YOUR OWN RISK**.
-
-If you are targeting RSA public keys, which is the main use-case of this algorithm
-and the reason that integers within the code are referred to as 'moduli', please
-consider **not storing/reading the factors** (the library won't write them to
-disk directly, but they will of course be on your RAM) and more importantly,
-**informing compromised key owners** so that they have a chance to revoke their
-keys / fix their implementations.
-
-Please **don't** use this code if you're targeting a set of keys with
-bad intentions.
 
 Suggestions/comments/questions are more than welcome.
 
