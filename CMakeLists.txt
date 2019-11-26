@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project("Batch GCD" VERSION 1.0)
 
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
