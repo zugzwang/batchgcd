@@ -1,5 +1,5 @@
 *.swp
-data/
+build/data/
 tags
 *.o
 *.csv
@@ -44,7 +44,18 @@ tags
 *.app
 
 ### CMake ###
-build
+build/CMakeLists.txt.user
+build/CMakeCache.txt
+build/CMakeFiles
+build/CMakeScripts
+build/Testing
+build/Makefile
+build/cmake_install.cmake
+build/install_manifest.txt
+build/compile_commands.json
+build/CTestTestfile.cmake
+build/_deps
+
 
 ### CMake Patch ###
 # External projects
