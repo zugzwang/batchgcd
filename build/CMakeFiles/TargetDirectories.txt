@@ -1,3 +1,0 @@
-/home/botvinnik/projects/crypto/c-batchgcd/build/CMakeFiles/rebuild_cache.dir
-/home/botvinnik/projects/crypto/c-batchgcd/build/CMakeFiles/batchgcd.dir
-/home/botvinnik/projects/crypto/c-batchgcd/build/CMakeFiles/edit_cache.dir
