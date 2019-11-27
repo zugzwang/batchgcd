@@ -194,3 +194,21 @@ void read_level_from_file(int l, vector<mpz_class> *moduli) {
     cout << mpz_sizeinbase((*moduli)[0].get_mpz_t(), 2) << " bits" << endl;
 }
 
+void my_mpz_inp_raw(mpz_class &x, FILE* file) {
+    std::ifstream source("eraseme.txt", std::ios_base::binary);
+    int byte, next_byte;
+    source.get();
+    source.get();
+    source.get();
+    source.get();
+    next_byte = source.get();
+    while (source) {
+        byte = next_byte;
+        next_byte = source.get();
+        x <<= 8;
+        x += byte;
+        if (next_byte == -1) {
+            continue;
+        }
+    }
+}

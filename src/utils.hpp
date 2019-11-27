@@ -19,4 +19,6 @@ void remainders_squares(int, std::vector<mpz_class> *);
 void remainders_squares_simple(int, std::vector<mpz_class> *);
 void remainders_squares_fast(int, std::vector<mpz_class> *);
 
+void my_mpz_inp_raw(mpz_class &, FILE *);
+
 #endif /* UTILS_HPP */

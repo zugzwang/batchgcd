@@ -15,7 +15,8 @@ find_package(GMP REQUIRED)
 add_executable(batchgcd src/batchgcd.cpp
                         src/utils.cpp)
 
-add_executable(gmp_overflow src/test/gmp_import_overflow.cpp)
+add_executable(gmp_overflow src/test/gmp_import_overflow.cpp
+                            src/utils.cpp)
 
 target_link_libraries(batchgcd gmp gmpxx ${Boost_LIBRARIES})
 target_link_libraries(gmp_overflow gmp gmpxx ${Boost_LIBRARIES})
