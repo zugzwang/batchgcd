@@ -92,15 +92,16 @@ void remainders_squares(int levels, vector<mpz_class> *R) {
 
 // Straightforward but slow, since the internal variable Z is potentially huge.
 void remainders_squares_simple(int levels, vector<mpz_class> *R) {
-    mpz_class Z;
+    // Read product
+    read_level_from_file(levels-1, R);
+    mpz_class Z = (*R)[0];
     read_level_from_file(0, R);
-    read_variable_from_file(levels-1, 0, Z);
     cout << "   Computing partial remainders ";
     for(unsigned int i = 0; i < R->size(); i++) {
+        cout << i << endl;
         (*R)[i] *= (*R)[i];
         (*R)[i] = Z % (*R)[i];
     }
-    delete &Z;
 }
 
 /* remainders_squares_fast is Bernstein suggestion. It uses more RAM.
@@ -118,14 +119,20 @@ void remainders_squares_fast(int levels, vector<mpz_class> *R) {
         cout << "Fatal error: Incomplete product tree" << endl;
         throw std::exception();
     }
+    string dir = "data/product_tree/level";
+    mpz_t _square;
+    mpz_init(_square);
+    mpz_class square;
     for(int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
         cout << "   Computing partial remainders ";
         cout << levels-2-l << " of " << levels-2 << endl;
         unsigned int lengthY = filesPerFloor[l];
-        mpz_class square;
+        string filename = dir + to_string(l) + ".gmp";
+        FILE* file = fopen(filename.c_str(), "r");
         for(unsigned int i = 0; i < lengthY; i++) {
-            read_variable_from_file(l, i, square);
+            mpz_inp_raw(_square, file);
+            square = mpz_class(_square);
             square *= square;
             square = (*R)[i/2] % square;
             newR.push_back(square);
@@ -133,6 +140,7 @@ void remainders_squares_fast(int levels, vector<mpz_class> *R) {
         *R = newR;
     }
     // Free used memory
+    mpz_clear(_square);
     vector<mpz_class>().swap(newR);
 }
 
@@ -142,6 +150,17 @@ void remainders_squares_fast(int levels, vector<mpz_class> *R) {
  * stored in a separate file (see mpz_out_raw).
  */
 void write_level_to_file(int l, vector<mpz_class> *X) {
+    string dir = "data/product_tree/level" + to_string(l) + ".gmp";
+    cout << "   Writing product tree level to " << dir << endl;
+    FILE* file = fopen(dir.c_str(), "wb");
+    assert(file);
+    for(unsigned int i = 0; i < X->size(); i++) {
+        mpz_out_raw(file, (*X)[i].get_mpz_t());
+    }
+    fclose(file);
+}
+
+void write_level_to_file_old(int l, vector<mpz_class> *X) {
     string dir = "data/product_tree/level" + to_string(l) + "/";
     boost::filesystem::create_directory(dir.c_str());
     cout << "   Writing product tree level to " << dir << " (";
@@ -155,40 +174,23 @@ void write_level_to_file(int l, vector<mpz_class> *X) {
     }
 }
 
-/* read_variable_from_file imports the given raw data, initializes an mpz_class
- * and writes it at the given address.
- */
-void read_variable_from_file(int level, int index, mpz_class &x) {
-    string dir = "data/product_tree/level" + to_string(level) + "/";
-    string filename = dir + to_string(index) + ".gmp";
-    mpz_t y;
-    mpz_init(y);
-
-    FILE* file = fopen(filename.c_str(), "r");
-    mpz_inp_raw(y, file);
-    fclose(file);
-    x = mpz_class(y);
-    mpz_clear(y);
-}
-
-/* Similar as read_variable_from_file but for a whole tree level.
+/* read_level_from_file imports level 'l' from binary file, and initializes the
+ * given vector with these values.
  */
 void read_level_from_file(int l, vector<mpz_class> *moduli) {
-    string dir = "data/product_tree/level" + to_string(l) + "/";
+    string dir = "data/product_tree/level" + to_string(l) + ".gmp";
     cout << "   Reading product tree level from " << dir << endl;
-    ifstream file(dir);
+    // ifstream file(dir);
     vector<mpz_class>().swap(*moduli);
-    string filename;
     mpz_t mod;
     mpz_init(mod);
 
+    FILE* file = fopen(dir.c_str(), "r");
     for(unsigned int i = 0; i < filesPerFloor[l]; i++) {
-        filename = dir + to_string(i) + ".gmp";
-        FILE* file = fopen(filename.c_str(), "r");
         mpz_inp_raw(mod, file);
-        fclose(file);
         moduli->push_back(mpz_class(mod));
     }
+    fclose(file);
     mpz_clear(mod);
     cout << "   ok, read " << moduli->size() << " ints of ";
     cout << mpz_sizeinbase((*moduli)[0].get_mpz_t(), 2) << " bits" << endl;
