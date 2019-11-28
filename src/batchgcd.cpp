@@ -19,9 +19,8 @@
  *
  *                               M = l * n * log(n)
  *
- *  bits. That is 10.7 GB of information in around 4 million files if
- *  you are targeting 2 million 2048-bit integers. Please do the numbers and use
- *  AT YOUR OWN RISK.
+ *  bits. That is 10.7 GB of information if you are targeting 2 million
+ *  2048-bit integers. Please do the numbers and use AT YOUR OWN RISK.
  *
  *  If you're targeting RSA keys, which is the main use-case of this algorithm
  *  and the reason that integers here are referred to as 'moduli', please
@@ -97,13 +96,18 @@ int main(int argc, char** argv){
     elapsedC += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 
 
-    cout << "Total time elapsed (s): ";
+    cout << endl;
+    cout << "   *****************************  " << endl;
+    cout << "   *****************************  " << endl;
+    cout << "   *  Total time elapsed (s):  *" << endl;
     int totalSec = int(elapsedA + elapsedB + elapsedC);
     int totalMin = totalSec / 60;
     int totalHour = totalMin / 60;
     totalSec %= 60;
     totalMin %= 60;
     cout << totalHour << "h " << totalMin << "m " << totalSec << "s " << endl;
+    cout << "   *****************************  " << endl;
+    cout << "   *****************************  " << endl << endl;
 
     cout << "Verifying correctness before announcing results" << endl << endl;
     vector<int> compromised;
