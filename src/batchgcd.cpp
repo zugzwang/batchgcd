@@ -138,9 +138,9 @@ int main(int argc, char** argv){
     cout << "   |-- Results --|" << endl;
     cout << "    ------------- " << endl << endl;
     cout << "Amount of target moduli:       " << input_moduli.size() << endl;
-    cout << "Amount of duplicates: " << duplicates.size() << endl;
-    cout << "Amount of compromised moduli: " << compromised.size() << endl;
-    cout << "False positives: " << false_positives << endl;
+    cout << "Amount of duplicates:          " << duplicates.size() << endl;
+    cout << "Amount of compromised moduli:  " << compromised.size() << endl;
+    cout << "False positives:               " << false_positives << endl;
     cout << "Writing compromised IDs to file..." << endl;
     string line = "";
     ofstream file;
