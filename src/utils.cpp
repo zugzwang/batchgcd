@@ -227,8 +227,7 @@ void remainders_squares_fast_seq(int levels, vector<mpz_class> *R) {
 
 /*
  * write_level_to_file takes an array of integers stored in the input address
- * and writes them to data/product_level/level<given index>. Each variable is
- * stored in a separate file (see mpz_out_raw).
+ * and writes them to data/product_level/level<given index>.gmp.
  */
 void write_level_to_file(int l, vector<mpz_class> *X) {
     string dir = "data/product_tree/level" + to_string(l) + ".gmp";
