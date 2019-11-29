@@ -33,6 +33,7 @@ void read_moduli_from_csv( \
         IDs->push_back(id);
         moduli->push_back(mpz_class(n));
     }
+    mpz_clear(n);
     fclose(file);
     cout << "Done. Read " << moduli->size() << " moduli" << endl;
 }
@@ -188,6 +189,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
             threads.at(j).join();
         }
     }
+    fclose(file);
 }
 
 void remainders_squares_fast_seq(int levels, vector<mpz_class> *R) {
