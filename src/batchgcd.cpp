@@ -107,6 +107,7 @@ int main(int argc, char** argv){
 
     cout << "Verifying correctness before announcing results" << endl << endl;
     vector<int> compromised;
+    vector<int> duplicates;
     int false_positives = 0;
     // False positives should not exist, this is a sanity check for large input
     // sets.
@@ -114,8 +115,9 @@ int main(int argc, char** argv){
         if(R[i] != 1) {
             if(R[i] == 0 || input_moduli[i] % R[i] != 0) {
                 false_positives += 1;
-            }
-            else {
+            } else if(R[i] == input_moduli[i]) {
+                duplicates.push_back(IDs[i]);
+            } else {
                 compromised.push_back(IDs[i]);
             }
         }
@@ -123,14 +125,21 @@ int main(int argc, char** argv){
     cout << "    ------------- " << endl;
     cout << "   |-- Results --|" << endl;
     cout << "    ------------- " << endl << endl;
+    cout << "Amount of duplicates: " << duplicates.size() << endl;
     cout << "Amount of compromised moduli: " << compromised.size() << endl;
     cout << "False positives: " << false_positives << endl;
     cout << "Writing compromised IDs to file..." << endl;
     string line = "";
     ofstream file;
-    file.open("results.csv");
+    file.open("compromised.csv");
     for(unsigned int i = 0; i < compromised.size(); i++) {
         line = to_string(compromised[i]) + "\n";
+        file << line;
+    }
+    file.close();
+    file.open("duplicates.csv");
+    for(unsigned int i = 0; i < duplicates.size(); i++) {
+        line = to_string(duplicates[i]) + "\n";
         file << line;
     }
     file.close();
