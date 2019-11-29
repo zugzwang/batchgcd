@@ -1,3 +1,4 @@
+set (CMAKE_CXX_STANDARD 11)
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project("Batch GCD" VERSION 1.0)
 
@@ -12,14 +13,16 @@ add_definitions( "-lboost_filesystem" )
 # GMP
 find_package(GMP REQUIRED)
 
+# Threads
+find_package(Threads REQUIRED)
+
 add_executable(batchgcd src/batchgcd.cpp
                         src/utils.cpp)
 
-add_executable(gmp_overflow src/test/gmp_import_overflow.cpp
-                            src/utils.cpp)
+# add_executable(gmp_overflow src/test/gmp_import_overflow.cpp
+#                             src/utils.cpp)
 
-target_link_libraries(batchgcd gmp gmpxx ${Boost_LIBRARIES})
-target_link_libraries(gmp_overflow gmp gmpxx ${Boost_LIBRARIES})
-
-# enable_testing()
-# add_test(test batchgcd)
+target_link_libraries(batchgcd gmp gmpxx ${Boost_LIBRARIES}
+                                         ${CMAKE_THREAD_LIBS_INIT})
+# target_link_libraries(gmp_overflow gmp gmpxx ${Boost_LIBRARIES}
+#                                              ${CMAKE_THREAD_LIBS_INIT})
