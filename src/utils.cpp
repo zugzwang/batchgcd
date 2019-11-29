@@ -12,20 +12,28 @@ vector<unsigned int> intsPerFloor;
 void read_moduli_from_csv( \
         string filename, vector<mpz_class> *moduli, vector<int>*IDs) {
     cout << "Reading moduli from " << filename << endl;
-    ifstream file(filename);
-	string line = "";
-	// Iterate through each line and split the content using delimeter
-    vector<string> vec;
-    mpz_class n;
-	while (getline(file, line))
-	{
-            boost::algorithm::split(vec, line, boost::is_any_of(","));
-            n = mpz_class(vec[2]);
-            IDs->push_back(stoi(vec[0]));
-            moduli->push_back(n);
-	}
-	// Close the File
-	file.close();
+    FILE* file = fopen(filename.c_str(), "rb");
+    assert(file);
+    // Iterate through each line and split the content using delimeter
+    mpz_t n;
+    mpz_init(n);
+    int err = 0;
+    while(true) {
+        int id;
+        int bitlen;
+        fscanf(file, "%d,%d,", &id, &bitlen);
+        err = gmp_fscanf(file, "%Zd", n);
+        if(err == EOF) {
+            break;
+        }
+        if (err != 1) {
+            cout << "Cannot process moduli file" << endl;
+            throw std::exception();
+        }
+        IDs->push_back(id);
+        moduli->push_back(mpz_class(n));
+    }
+    fclose(file);
     cout << "Done. Read " << moduli->size() << " moduli" << endl;
 }
 
@@ -37,20 +45,6 @@ void read_moduli_from_csv( \
  * Warning: Input IS DESTROYED, in order to use the occupied RAM if necessary.
  */
 int product_tree(vector<mpz_class> *X) {
-    // return product_tree_seq(X);
-    return product_tree_multithread(X);
-}
-
-/* remainders_squares computes the list remᵢ <- Z mod Xᵢ² where X are the
- * moduli and Z is their product. This list is written to the input address.
- */
-void remainders_squares(int levels, vector<mpz_class> *R) {
-    // remainders_squares_fast_seq(levels, R);
-    remainders_squares_fast_multithread(levels, R);
-}
-
-
-int product_tree_multithread(vector<mpz_class> *X) {
     cout << "Computing product tree of " << X->size() << " moduli." << endl;
     vector<mpz_class> current_level, new_level;
     mpz_class *prod = new(mpz_class);
@@ -98,72 +92,29 @@ int product_tree_multithread(vector<mpz_class> *X) {
  */
 void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next) {
     _next->resize(_level->size()/2);
-    int pos = 0;
-    for(int i = 0; i < _next->size(); i += N_THREADS) {
-        vector<thread> threads;
-        for(int j = 0; j < N_THREADS; j++) {
-            pos = i + j;
-            if(i+j >= _next->size()) {
-                break;
-            }
-            // Define operands for this thread
-            mpz_class *operand1 = &(_level->at(2*pos));
-            mpz_class *operand2 = &(_level->at(2*pos+1));
-            mpz_class *result = &(_next->at(pos));
-            threads.push_back(thread([operand1, operand2, result]() mutable {
-                    *result = *operand1 * *operand2;
+    vector<thread> threads;
+    // Thread 'j' will handle all products in position eq. j mod N_THREADS.
+    for(int j = 0; j < N_THREADS; j++) {
+        threads.push_back(
+                thread([=]() mutable {
+                    for(int i = j; i < _next->size(); i += N_THREADS) {
+                        (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
+                    }
+                    string s = "     Thread " + to_string(j) + " finished.\n";
+                    cout << s;
                     }));
-        }
-        for(int j = 0; j < threads.size(); j++) {
-            threads.at(j).join();
-        }
-        vector<thread>().swap(threads);
     }
+    for(int j = 0; j < threads.size(); j++) {
+        threads.at(j).join();
+    }
+    vector<thread>().swap(threads);
 }
 
-int product_tree_seq(vector<mpz_class> *X) {
-    cout << "Computing product tree of " << X->size() << " moduli." << endl;
-    vector<mpz_class> current_level, new_level;
-    mpz_class *prod = new(mpz_class);
-    int l = 0;
-    current_level = *X;
-    while (current_level.size() > 1) {
-        intsPerFloor.push_back(current_level.size());
-        write_level_to_file(l, &current_level);
-
-        // Free new level
-        vector<mpz_class>().swap(new_level);
-
-        // Multiply
-        cout << "   Multiplying " << current_level.size() << " ints of ";
-        cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
-        cout << endl;
-        for (unsigned int i = 0; i < current_level.size()-1; i+=2) {
-            *prod = current_level[i] * current_level[i+1];
-            new_level.push_back(*prod);
-        }
-
-        // Append orphan node
-        if (current_level.size()%2 != 0) {
-            new_level.push_back(current_level.back());
-        }
-
-        current_level = new_level;
-        if (l == 0) {
-            // Free leaves after using, in order to get that RAM if necessary.
-            vector<mpz_class>().swap(*X);
-        }
-        l ++;
-    }
-    delete prod;
-
-    // Last floor
-    intsPerFloor.push_back(current_level.size());
-    write_level_to_file(l, &current_level);
-
-    vector<mpz_class>().swap(current_level);
-    vector<mpz_class>().swap(new_level);
-    return l+1;
+/* remainders_squares computes the list remᵢ <- Z mod Xᵢ² where X are the
+ * moduli and Z is their product. This list is written to the input address.
+ */
+void remainders_squares(int levels, vector<mpz_class> *R) {
+    remainders_squares_fast(levels, R);
 }
 
 // Straightforward but slow, since the internal variable Z is potentially huge.
@@ -180,14 +131,14 @@ void remainders_squares_simple(int levels, vector<mpz_class> *R) {
     }
 }
 
-/* remainders_squares_fast is Bernstein suggestion. It uses more RAM.
+/* remainders_squares_fast is Bernstein's suggestion. It uses more RAM.
  * The temporary vector newR uses the same amount of memory as R, and the
  * internal 'square' needs the double of this amount in the first iteration
  * (its first value is Z^2).
- * Consequently, the first iteration is the most tense part of the algorithm in
- * terms of memory.
+ * Consequently, the first iterations are the most tense part of the algorithm
+ * in terms of memory.
  */
-void remainders_squares_fast_multithread(int levels, vector<mpz_class> *R) {
+void remainders_squares_fast(int levels, vector<mpz_class> *R) {
     vector<mpz_class> newR;
     read_level_from_file(levels-1, R);
     // Sanity check
@@ -228,9 +179,9 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
             mpz_class *operand = &(_R->at(pos/2));
             mpz_class *result = &(_new->at(pos));
             threads.push_back(thread([square, operand, result]() mutable {
-                    square *= square;
-                    *result = *operand % square;
-                    }));
+                        square *= square;
+                        *result = *operand % square;
+                        }));
             mpz_clear(_square);
         }
         for(int j = 0; j < threads.size(); j++) {

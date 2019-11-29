@@ -9,7 +9,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
-#define N_THREADS 4
+extern int N_THREADS;
 
 using namespace std;
 

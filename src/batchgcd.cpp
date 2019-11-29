@@ -38,6 +38,7 @@
 
 #include "utils.hpp"
 
+int N_THREADS = 1;
 using namespace std;
 
 /* Pre-requisites:
@@ -50,6 +51,12 @@ using namespace std;
  */
 
 int main(int argc, char** argv){
+    if(argc < 2) {
+        cout << "Please specify target csv file." << endl;
+        exit(1);
+    }
+    cout << "Define number of threads: ";
+    cin >> N_THREADS;
 
     // Set timer
     struct timespec start, finish;
@@ -58,10 +65,10 @@ int main(int argc, char** argv){
     cout << " --------------------------------------------------- " << endl;
     cout << "| Part (A) - Product 'Z' and product tree of moduli |" << endl;
     cout << " --------------------------------------------------- " << endl;
-    clock_gettime(CLOCK_MONOTONIC, &start);
     vector<mpz_class> input_moduli;
     vector<int> IDs;
-    read_moduli_from_csv("data/moduli.csv", &input_moduli, &IDs);
+    read_moduli_from_csv(argv[1], &input_moduli, &IDs);
+    clock_gettime(CLOCK_MONOTONIC, &start);
     int levels = product_tree(&input_moduli);
     clock_gettime(CLOCK_MONOTONIC, &finish);
     cout << "End Part (A)" << endl;
@@ -105,6 +112,7 @@ int main(int argc, char** argv){
     int totalHour = totalMin / 60;
     totalSec %= 60;
     totalMin %= 60;
+    cout << "      ";
     cout << totalHour << "h " << totalMin << "m " << totalSec << "s " << endl;
     cout << "   *****************************  " << endl;
     cout << "   *****************************  " << endl << endl;
@@ -127,8 +135,9 @@ int main(int argc, char** argv){
     cout << "    ------------- " << endl;
     cout << "   |-- Results --|" << endl;
     cout << "    ------------- " << endl << endl;
-    cout << "Amount of compromised moduli: " << compromised.size() << endl;
-    cout << "False positives: " << false_positives << endl;
+    cout << "Amount of target moduli:       " << input_moduli.size() << endl;
+    cout << "Amount of compromised moduli:  " << compromised.size() << endl;
+    cout << "False positives:               " << false_positives << endl << endl;
     cout << "Writing compromised IDs to file..." << endl;
     string line = "";
     ofstream file;
@@ -141,3 +150,14 @@ int main(int argc, char** argv){
     cout << "Done, bye." << endl;
     return 0;
 }
+
+// Only for fair benchmarking against factorable.net
+void output_base16(vector<mpz_class> *X) {
+    ofstream file;
+    file.open("base16.moduli");
+    for(unsigned int i = 0; i < X->size(); i++) {
+        file << X->at(i).get_str(16) << "\n";
+    }
+    file.close();
+}
+
