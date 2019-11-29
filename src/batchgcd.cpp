@@ -156,6 +156,12 @@ int main(int argc, char** argv){
         file << line;
     }
     file.close();
+    if(duplicates.size()) {
+        cout << "Note: filter duplicates directly from the input file ";
+        cout << "(i.e., ignoring the output file)";
+        cout << " and run again. They may contain compromised moduli.";
+        cout << endl;
+    }
     cout << "Done, bye." << endl;
     return 0;
 }
