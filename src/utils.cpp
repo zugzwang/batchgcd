@@ -21,7 +21,7 @@ void read_moduli_from_csv( \
     while(true) {
         int id;
         int bitlen;
-        fscanf(file, "%d,%d,", &id, &bitlen);
+        err = fscanf(file, "%d,%d,", &id, &bitlen);
         err = gmp_fscanf(file, "%Zd", n);
         if(err == EOF) {
             break;
@@ -97,17 +97,16 @@ void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next)
     // Thread 'j' will handle all products in position eq. j mod N_THREADS.
     for(int j = 0; j < N_THREADS; j++) {
         threads.push_back(
-                thread([=]() mutable {
-                    for(int i = j; i < _next->size(); i += N_THREADS) {
+                thread([j, _level, _next]() mutable {
+                    for(unsigned int i = j; i < _next->size(); i += N_THREADS) {
                         (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
                     }
                     string s = "     Thread " + to_string(j) + " finished.\n";
                     cout << s;
                     }));
     }
-    for(int j = 0; j < threads.size(); j++) {
-        threads.at(j).join();
-    }
+    for(auto& th : threads)
+        th.join();
     vector<thread>().swap(threads);
 }
 
@@ -165,7 +164,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
     string filename = dir + to_string(l) + ".gmp";
     FILE* file = fopen(filename.c_str(), "r");
     int pos = 0;
-    for(int i = 0; i < _new->size(); i += N_THREADS) {
+    for(unsigned int i = 0; i < _new->size(); i += N_THREADS) {
         vector<thread> threads;
         for(int j = 0; j < N_THREADS; j++) {
             pos = i + j;
@@ -185,7 +184,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
                         }));
             mpz_clear(_square);
         }
-        for(int j = 0; j < threads.size(); j++) {
+        for(unsigned int j = 0; j < threads.size(); j++) {
             threads.at(j).join();
         }
     }

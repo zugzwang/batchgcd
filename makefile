@@ -1,15 +1,15 @@
-CC      = g++
-CFLAGS  = -Wall -O3 -std=c++11 -lgmp -lboost_filesystem -lboost_system -g -lpthread
-RM      = rm -f
+CXX      = g++
+CXXFLAGS   = -Wall -std=c++17 -O3 -lpthread -lrt -lboost_system -g -I./gmp-patched/include/ -Dmpz_raw_64
+LDFLAGS  =-static -L./gmp-patched/lib -lgmp
 
 default: batchgcd
 
-batchgcd: src/batchgcd.cpp
-	$(CC) src/batchgcd.cpp src/utils.cpp -o batchgcd $(CFLAGS)
+batchgcd:
+	$(CXX) src/batchgcd.cpp src/utils.cpp -o batchgcd $(CXXFLAGS) $(LDFLAGS)
 
 memcheck:
 	valgrind --leak-check=full ./batchgcd toy_moduli.csv
 
 clean:
-	rm -rf *.o data/product_tree/*
+	rm -rf batchgcd *.o data/product_tree/*
 
