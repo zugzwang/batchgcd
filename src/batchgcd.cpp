@@ -67,8 +67,8 @@ int main(int argc, char** argv){
     cout << " --------------------------------------------------- " << endl;
     vector<mpz_class> input_moduli;
     vector<int> IDs;
-    read_moduli_from_csv(argv[1], &input_moduli, &IDs);
     clock_gettime(CLOCK_MONOTONIC, &start);
+    read_moduli_from_csv(argv[1], &input_moduli, &IDs);
     int levels = product_tree(&input_moduli);
     clock_gettime(CLOCK_MONOTONIC, &finish);
     cout << "End Part (A)" << endl;
