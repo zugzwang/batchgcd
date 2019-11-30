@@ -75,8 +75,6 @@ int main(int argc, char** argv){
     elapsedA = finish.tv_sec - start.tv_sec;
     elapsedA += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
     cout << "Time elapsed (s): " << elapsedA << endl << endl;
-    // read_level_from_file(0, &input_moduli);
-    // exit(1);
 
     cout << " ----------------------------------------------------- " << endl;
     cout << "| Part (B) - Compute the remainders remᵢ <- Z mod Xᵢ² |" << endl;

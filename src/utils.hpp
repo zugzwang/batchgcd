@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include <iostream>
-// #include <thread>
 #include <vector>
 #include <gmp.h>
 #include <gmpxx.h>
