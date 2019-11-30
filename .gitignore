@@ -1,4 +1,6 @@
-gmp-*
+gmp-6.1.2/
+gmp-patched/
+gmp-6.1.2.tar.bz2
 data/
 batchgcd
 

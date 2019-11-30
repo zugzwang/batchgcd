@@ -66,8 +66,6 @@ int main(int argc, char** argv){
     cout << "| Part (A) - Product 'Z' and product tree of moduli |" << endl;
     cout << " --------------------------------------------------- " << endl;
     vector<mpz_class> input_moduli;
-    read_level_from_file(0, &input_moduli);
-    return 0;
     vector<int> IDs;
     read_moduli_from_csv(argv[1], &input_moduli, &IDs);
     clock_gettime(CLOCK_MONOTONIC, &start);
