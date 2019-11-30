@@ -1,8 +1,12 @@
 #!/bin/bash
 
+# This is a modified version of the patch script of factorable.net.
+
 __exists() {
     which $1 1>/dev/null 2>&1
 }
+
+cd gmp
 
 get="fetch";
 ! __exists fetch && get="curl -OL";
@@ -19,7 +23,7 @@ if [[ $sum != "366ded6a44cd108ba6b3f5b9a252eab3f3a95cdf" ]];
 then
     echo ''
     echo '=========================================='
-    echo 'ERROR: could not verify gmp-5.0.5.tar.bz2;'
+    echo 'ERROR: could not verify gmp-6.1.2.tar.bz2;'
     echo 'Downloaded over untrusted channel (non-https)'
     echo '=========================================='
     exit;
@@ -31,11 +35,8 @@ tar xf gmp-6.1.2.tar.bz2
 
 cd gmp-6.1.2
 patch -p 1 < ../gmp-6.1.2.patch
-mkdir ../gmp-patched
-./configure --prefix=$PWD/../gmp-patched/
+mkdir ../patched
+./configure --prefix=$PWD/../patched/
 make
 make install
 cd ..
-# make
-#
-#
