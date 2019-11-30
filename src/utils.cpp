@@ -93,11 +93,11 @@ int product_tree(vector<mpz_class> *X) {
  */
 void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next) {
     _next->resize(_level->size()/2);
-    vector<thread> threads;
+    vector<boost::thread> threads;
     // Thread 'j' will handle all products in position eq. j mod N_THREADS.
     for(int j = 0; j < N_THREADS; j++) {
         threads.push_back(
-                thread([j, _level, _next]() mutable {
+                boost::thread([j, _level, _next]() mutable {
                     for(unsigned int i = j; i < _next->size(); i += N_THREADS) {
                         (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
                     }
@@ -107,7 +107,7 @@ void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next)
     }
     for(auto& th : threads)
         th.join();
-    vector<thread>().swap(threads);
+    vector<boost::thread>().swap(threads);
 }
 
 /* remainders_squares computes the list remᵢ <- Z mod Xᵢ² where X are the
@@ -165,7 +165,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
     FILE* file = fopen(filename.c_str(), "r");
     int pos = 0;
     for(unsigned int i = 0; i < _new->size(); i += N_THREADS) {
-        vector<thread> threads;
+        vector<boost::thread> threads;
         for(int j = 0; j < N_THREADS; j++) {
             pos = i + j;
             if(i+j >= _new->size()) {
@@ -178,7 +178,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
             mpz_class square(_square);
             mpz_class *operand = &(_R->at(pos/2));
             mpz_class *result = &(_new->at(pos));
-            threads.push_back(thread([square, operand, result]() mutable {
+            threads.push_back(boost::thread([square, operand, result]() mutable {
                         square *= square;
                         *result = *operand % square;
                         }));
