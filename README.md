@@ -7,7 +7,7 @@
 
 ## Updated patch for GMP binary I/O
 
-If you have a large database (8M 2048-bit moduli), current `gmp` won't swap some intermediate values correctly. The reason an undocumented raw binary I/O limit of `2**31` bytes. 
+If you have a large database (8M 2048-bit moduli), current `gmp` won't swap some intermediate values correctly. The reason is an undocumented raw binary I/O limit of `2**31` bytes. 
 
 The reference implementation [factorable.net](https://factorable.net) patched this for `gmp-5.0.5`, and we provide a similar patch for the current latest (`gmp-6.1.2`), which is a more optimized and C++ friendly version. 
 
