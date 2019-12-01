@@ -11,7 +11,7 @@ testpatch: src/test/testpatch.cpp src/utils.cpp
 	$(CXX) $(CXXFLAGS) $? $(LDFLAGS) -o $@
 
 memcheck:
-	valgrind --leak-check=full ./batchgcd toy_moduli.csv
+	valgrind --leak-check=full ./batchgcd toy.moduli
 
 clean:
 	rm -rf batchgcd *.o data/product_tree/* compromised.csv duplicates.csv
