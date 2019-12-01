@@ -7,14 +7,13 @@
 
 ## Updated patch for GMP binary I/O
 
-If you have a large database (8M 2048-bit moduli), current `gmp` won't swap some intermediate values correctly. The reason is an undocumented raw binary I/O limit of `2**31` bytes. 
+For large datasets (~ 8M 2048-bit moduli), current `gmp` won't swap some intermediate values correctly. The reason is an undocumented raw binary I/O limit of `2**31` bytes. 
 
-The reference implementation [factorable.net](https://factorable.net) patched this for `gmp-5.0.5`, and we provide a similar patch for the current latest (`gmp-6.1.2`), which is a more optimized and C++ friendly version. 
+The implementation of [factorable.net](https://factorable.net) patched this for `gmp-5.0.5`, and we provide a similar patch for the current latest (`gmp-6.1.2`), which is a more optimized and C++ friendly version. 
 
 Both `mpz_inp_raw` and `mpz_out_raw` are modified with the patch to admit integers up to `2**63` bytes; consequently, this **breaks compatibility** with regular `gmp` binary files.
 
 _Note that `mpz_inp_raw` and `mpz_out_raw` have changed since `gmp-5.0.5`, which makes the [factorable.net](https://factorable.net) patch incompatible with current versions of `gmp`, hence the update._
-
 
 Using the current `gmp` and the updated patch, this implementation is slightly faster than the one given in [factorable.net](https://factorable.net). Please, **do not rely on the patched library** for other purposes. The install script, which is an updated version of the [factorable.net](https://factorable.net) script, downloads `gmp-6.1.2`, applies the patch, and builds from source.
 
