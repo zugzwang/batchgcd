@@ -18,11 +18,16 @@ void read_moduli_from_csv( \
     mpz_t n;
     mpz_init(n);
     int err = 0;
+    bool zero = false;
     while(true) {
         int id;
         int bitlen;
         err = fscanf(file, "%d,%d,", &id, &bitlen);
         err = gmp_fscanf(file, "%Zd", n);
+        if(mpz_cmp_ui(n, 0) == 0) {
+            zero = true;
+            cout << "Modulus with id " << id << " equals 0." << endl;
+        }
         if(err == EOF) {
             break;
         }
@@ -32,6 +37,10 @@ void read_moduli_from_csv( \
         }
         IDs->push_back(id);
         moduli->push_back(mpz_class(n));
+    }
+    if(zero) {
+        cout << "Cannot process moduli file" << endl;
+        exit(1);
     }
     mpz_clear(n);
     fclose(file);
