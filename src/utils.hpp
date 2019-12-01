@@ -2,12 +2,13 @@
 #define UTILS_H
 
 #include <iostream>
-#include <thread>
 #include <vector>
 #include <gmp.h>
 #include <gmpxx.h>
+#include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+
 
 extern int N_THREADS;
 
