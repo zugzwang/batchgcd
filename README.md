@@ -3,7 +3,7 @@
 
 ## Description 
 
-(C++)+GMP implementation of the [Batch GCD algorithm](http://facthacks.cr.yp.to/batchgcd.html), by [Daniel Bernstein](https://cr.yp.to/djb.html). This algorithm, described in [How To Find Smooth Parts Of Integers](https://cr.yp.to/factorization/smoothparts-20040510.pdf), allows to compute pairwise GCDs of a list of integers. See e.g. [factorable.net](https://factorable.net), which also provides source code.
+(C++)+GMP implementation of the [Batch GCD algorithm](http://facthacks.cr.yp.to/batchgcd.html), by [Daniel Bernstein](https://cr.yp.to/djb.html). This algorithm, described in [How To Find Smooth Parts Of Integers](https://cr.yp.to/factorization/smoothparts-20040510.pdf), allows to compute pairwise GCDs of a list of integers in quasilinear time and memory. See e.g. [factorable.net](https://factorable.net), which also provides source code.
 
 ## Updated patch for GMP binary I/O
 
