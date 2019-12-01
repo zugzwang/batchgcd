@@ -1,8 +1,13 @@
 gmp/gmp-6.1.2/
 gmp/gmp-6.1.2.tar.bz2
 gmp/patched/
+
+# Sensitive data
 data/
+
+# Executables
 batchgcd
+testpatch
 
 *.swp
 build/data/

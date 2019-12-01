@@ -7,6 +7,9 @@ default: batchgcd
 batchgcd: src/batchgcd.cpp src/utils.cpp
 	$(CXX) $(CXXFLAGS) $? $(LDFLAGS) -o $@
 
+testpatch: src/test/testpatch.cpp src/utils.cpp
+	$(CXX) $(CXXFLAGS) $? $(LDFLAGS) -o $@
+
 memcheck:
 	valgrind --leak-check=full ./batchgcd toy_moduli.csv
 
