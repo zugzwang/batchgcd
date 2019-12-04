@@ -1,6 +1,6 @@
 CXX        = g++
-CXXFLAGS   = -Wall -std=c++17 -O4 -lboost_system -pthread -lboost_thread -g -I./gmp/patched/include/ -Dmpz_raw_64
-LDFLAGS    = -lboost_system -pthread -lboost_thread -lgmp -static -L./gmp/patched/lib
+CXXFLAGS   = -Wall -std=c++17 -O4 -lboost_system -pthread -lboost_thread-mt -g -I./gmp/patched/include/ -Dmpz_raw_64
+LDFLAGS    = -lboost_system -pthread -lboost_thread-mt -lgmp -static -L./gmp/patched/lib
 
 default: batchgcd
 
