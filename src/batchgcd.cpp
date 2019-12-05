@@ -44,9 +44,7 @@ using namespace std;
 /* Pre-requisites:
  *
  * - A file ./data/moduli.csv containing all moduli, in the format
- * <ID>,<bitLen>,<modulus in base 10>\n
- *
- * - A folder ./data/product_tree/ which will hold intermediate variables
+ * <ID>,<modulus in base 16>\n
  *
  */
 
