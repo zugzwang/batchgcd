@@ -21,9 +21,8 @@ void read_moduli_from_csv( \
     bool zero = false;
     while(true) {
         int id;
-        int bitlen;
-        err = fscanf(file, "%d,%d,", &id, &bitlen);
-        err = gmp_fscanf(file, "%Zd", n);
+        err = fscanf(file, "%d,", &id);
+        err = gmp_fscanf(file, "%Zx", n);
         if(mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;
