@@ -90,7 +90,9 @@ and **after reading the disclaimer below**, run with
 ```
 
 Results **contain no factors** (this is made on purpose, see the disclaimer
-below), and are stored by ID in `compromised.csv, duplicates.csv`.
+below), and only IDs are stored in `compromised.csv, duplicates.csv`.
+
+If there are duplicates, you may want to filter them out *before* running the algorithm, since number sharing all of its factors may appear as duplicate without really being duplicate. For instance; if `n = pq, m = pr, h = qr` all of them will appear as duplicates, and more work is needed to factorise them (of course, naïve GCDs between them will do).
 
 ## Disclaimer
 
