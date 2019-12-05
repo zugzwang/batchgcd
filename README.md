@@ -39,8 +39,7 @@ This patch has **not** been tested in 32-bit systems.
 
 ## Usage
 
-These instructions have been tested **only in `Ubuntu 18.04` and `19.04
-x86_64`.**
+These instructions have been tested **only in `Ubuntu 18.04, 19.04` and `Debian GNU/Linux 9.9 (stretch)`**.
 
 ### Requirements
 
@@ -54,7 +53,7 @@ third-party requirements.
 
 `curl` is only needed to download `gmp-6.1.2`. You can drop this requirement
 and download it manually. The `sha1` fingerprint of the `.tar.bz2` will be
-checked:
+checked anyway (see `gmp_patch.sh`):
 
 ```
 366ded6a44cd108ba6b3f5b9a252eab3f3a95cdf
@@ -64,7 +63,7 @@ checked:
 
 You need a csv file, containing integers in the following format
 ```
-<ID>,<bit length>,<modulus in base 10>\n
+<ID>,<modulus in base 16>\n
 ```
 
 Clone and `cd` to the repo. Run ``` make install ``` This will only create
@@ -91,7 +90,9 @@ and **after reading the disclaimer below**, run with
 ```
 
 Results **contain no factors** (this is made on purpose, see the disclaimer
-below), and are stored by ID in `compromised.csv, duplicates.csv`.
+below), and only IDs are stored in `compromised.csv, duplicates.csv`.
+
+If there are duplicates, you may want to filter them out *before* running the algorithm, since number sharing all of its factors may appear as duplicate without really being duplicate. For instance; if `n = pq, m = pr, h = qr` all of them will appear as duplicates, and more work is needed to factorise (of course, naïve pairwise GCDs will do).
 
 ## Disclaimer
 
