@@ -158,9 +158,11 @@ int main(int argc, char** argv){
     file.close();
     if(duplicates.size()) {
         cout << "Note: filter duplicates directly from the input file ";
-        cout << "(i.e., ignoring the output file)";
-        cout << " and run again. They may contain compromised moduli.";
-        cout << endl;
+        cout << "(i.e., ignoring the output file)" << endl;
+        cout << "and run again. They may contain compromised moduli. ";
+        cout << "If you already did this, then all\nintegers marked as ";
+        cout << "duplicate share factors (run naïve GCDs).";
+        cout << endl << endl;
     }
     cout << "Done, bye." << endl;
     return 0;
