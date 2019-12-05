@@ -54,7 +54,7 @@ third-party requirements.
 
 `curl` is only needed to download `gmp-6.1.2`. You can drop this requirement
 and download it manually. The `sha1` fingerprint of the `.tar.bz2` will be
-checked:
+checked anyway (see `gmp_patch.sh`):
 
 ```
 366ded6a44cd108ba6b3f5b9a252eab3f3a95cdf
