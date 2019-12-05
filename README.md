@@ -63,7 +63,7 @@ checked anyway (see `gmp_patch.sh`):
 
 You need a csv file, containing integers in the following format
 ```
-<ID>,<bit length>,<modulus in base 10>\n
+<ID>,<modulus in base 16>\n
 ```
 
 Clone and `cd` to the repo. Run ``` make install ``` This will only create
