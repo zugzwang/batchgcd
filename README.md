@@ -39,8 +39,7 @@ This patch has **not** been tested in 32-bit systems.
 
 ## Usage
 
-These instructions have been tested **only in `Ubuntu 18.04` and `19.04
-x86_64`.**
+These instructions have been tested **only in `Ubuntu 18.04, 19.04` and `Debian GNU/Linux 9.9 (stretch)`**.
 
 ### Requirements
 
