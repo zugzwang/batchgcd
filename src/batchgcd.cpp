@@ -67,9 +67,25 @@ int main(int argc, char** argv){
     vector<int> IDs;
     clock_gettime(CLOCK_MONOTONIC, &start);
     if (argc == 3){
-            read_moduli_from_csv(argv[1], argv[2], &input_moduli, &IDs);
+            string param = argv[2];
+            
+            string baseString = param.substr(param.find("-base") + 5);
+            if (!baseString.empty()) {
+                int base = 16;
+                try {
+                    base = stoi(baseString);
+                } catch(...) {
+                    cerr << "The base you type is not an int" << endl;
+                    exit(1);
+                }
+                read_moduli_from_csv(argv[1], &input_moduli, &IDs , base);
+            }else {
+                std::cout << "The input base parameters is incorrect -> Either type -base10 or leave empty" << std::endl;
+                exit(1);
+            }
+            
     } else {
-        read_moduli_from_csv(argv[1], "base16", &input_moduli, &IDs);
+        read_moduli_from_csv(argv[1], &input_moduli, &IDs);
     }
     
     int levels = product_tree(&input_moduli);

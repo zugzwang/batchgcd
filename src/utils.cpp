@@ -10,7 +10,7 @@ vector<unsigned int> intsPerFloor;
  * input_moduli, from the given file.
  */
 void read_moduli_from_csv( \
-        string filename, string base, vector<mpz_class> *moduli, vector<int>*IDs) {
+        string filename, vector<mpz_class> *moduli, vector<int>*IDs , int base) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
@@ -19,16 +19,18 @@ void read_moduli_from_csv( \
     mpz_init(n);
     int err = 0;
     bool zero = false;
-    cout << base << endl;
+    cout << "Reading moduli from file.csv (base" << base <<  ")" << endl;
     while(true) {
         int id;
-        if (base == "base10"){
-            err = fscanf(file, "%d,", &id);
-            err = gmp_fscanf(file, "%Zd", n);
-            
-        } else  {
-            err = fscanf(file, "%d,", &id);
+        err = fscanf(file, "%d,", &id);
+        // Reads the base to use for reading the file
+        if (base == 10){
+            err = gmp_fscanf(file, "%Zd", n);     
+        } else if (base == 16) {
             err = gmp_fscanf(file, "%Zx", n);
+        } else {
+            std::cout << "Base " << base << " is not compatible" << endl;
+            exit(1);
         }
         
         if(mpz_cmp_ui(n, 0) == 0) {
