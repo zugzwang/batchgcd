@@ -1,7 +1,7 @@
 
 # `(C++)+GMP` BatchGCD algorithm
 
-## Description 
+## Description
 
 (C++)+GMP implementation of the [Batch GCD
 algorithm](http://facthacks.cr.yp.to/batchgcd.html), by [Daniel
@@ -15,7 +15,7 @@ e.g. [factorable.net](https://factorable.net), which also provides source code.
 
 For large datasets (~ 8M 2048-bit moduli), current `gmp` won't swap some
 intermediate values correctly. The reason is an undocumented raw binary I/O
-limit of `2**31` bytes. 
+limit of `2**31` bytes.
 
 The implementation of [factorable.net](https://factorable.net) patched this for
 `gmp-5.0.5`, and we provide a similar patch for the current latest
@@ -39,7 +39,8 @@ This patch has **not** been tested in 32-bit systems.
 
 ## Usage
 
-These instructions have been tested **only in `Ubuntu 18.04, 19.04` and `Debian GNU/Linux 9.9 (stretch)`**.
+These instructions have been tested **only in `Ubuntu 18.04, 19.04` and `Debian
+GNU/Linux 9.9 (stretch)`**.
 
 ### Requirements
 
@@ -63,19 +64,13 @@ checked anyway (see `gmp_patch.sh`):
 
 You need a csv file, containing integers in the following format
 
-#### Default File Input
 ```
 <ID>,<modulus in base 16>\n
 ```
-#### Base 10 File Input
-```
+You can also use
 <ID>,<modulus in base 10>\n
 ```
-
-
-Clone and `cd` to the repo. Run ``` make install ``` This will only create
-necessary folders for `gmp` I/O. Run the download-patch-build-install script
-``` ./patch_gmp.sh ```
+and set the `-base10` option when running.
 
 ### Install
 
@@ -93,12 +88,11 @@ Compile with
 ```make batchgcd```
 and **after reading the disclaimer below**, run with
 ```
-./batchgcd <path to your target csv file> [-base<int>]
+./batchgcd <path to your target csv file> [-base10]
 ```
-Default base is 16, add -base10 as parameters to use moduli in base10
-
-Results **contain no factors** (this is made on purpose, see the disclaimer
-below), and only IDs are stored in `compromised.csv, duplicates.csv`.
+Without the `-base10` option, the default is base 16. Results **contain no
+factors** (this is made on purpose, see the disclaimer below), and only IDs are
+stored in `compromised.csv, duplicates.csv`.
 
 If there are duplicates, you may want to filter them out *before* running the algorithm, since number sharing all of its factors may appear as duplicate without really being duplicate. For instance; if `n = pq, m = pr, h = qr` all of them will appear as duplicates, and more work is needed to factorise (of course, naïve pairwise GCDs will do).
 
