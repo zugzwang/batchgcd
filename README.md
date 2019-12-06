@@ -93,9 +93,9 @@ Compile with
 ```make batchgcd```
 and **after reading the disclaimer below**, run with
 ```
-./batchgcd <path to your target csv file> [base]
+./batchgcd <path to your target csv file> [-base<int>]
 ```
-Default base is 16, add base10 as parameters to use moduli in base10
+Default base is 16, add -base10 as parameters to use moduli in base10
 
 Results **contain no factors** (this is made on purpose, see the disclaimer
 below), and only IDs are stored in `compromised.csv, duplicates.csv`.
