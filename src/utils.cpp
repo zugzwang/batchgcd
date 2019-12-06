@@ -10,7 +10,7 @@ vector<unsigned int> intsPerFloor;
  * input_moduli, from the given file.
  */
 void read_moduli_from_csv( \
-        string filename, vector<mpz_class> *moduli, vector<int>*IDs) {
+        string filename, string base, vector<mpz_class> *moduli, vector<int>*IDs) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
@@ -19,10 +19,18 @@ void read_moduli_from_csv( \
     mpz_init(n);
     int err = 0;
     bool zero = false;
+    cout << base << endl;
     while(true) {
         int id;
-        err = fscanf(file, "%d,", &id);
-        err = gmp_fscanf(file, "%Zx", n);
+        if (base == "base10"){
+            err = fscanf(file, "%d,", &id);
+            err = gmp_fscanf(file, "%Zd", n);
+            
+        } else  {
+            err = fscanf(file, "%d,", &id);
+            err = gmp_fscanf(file, "%Zx", n);
+        }
+        
         if(mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;

@@ -66,7 +66,12 @@ int main(int argc, char** argv){
     vector<mpz_class> input_moduli;
     vector<int> IDs;
     clock_gettime(CLOCK_MONOTONIC, &start);
-    read_moduli_from_csv(argv[1], &input_moduli, &IDs);
+    if (argc == 3){
+            read_moduli_from_csv(argv[1], argv[2], &input_moduli, &IDs);
+    } else {
+        read_moduli_from_csv(argv[1], "base16", &input_moduli, &IDs);
+    }
+    
     int levels = product_tree(&input_moduli);
     clock_gettime(CLOCK_MONOTONIC, &finish);
     cout << "End Part (A)" << endl;
