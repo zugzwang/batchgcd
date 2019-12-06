@@ -62,9 +62,16 @@ checked anyway (see `gmp_patch.sh`):
 ### Input file
 
 You need a csv file, containing integers in the following format
+
+#### Default File Input
 ```
 <ID>,<modulus in base 16>\n
 ```
+#### Base 10 File Input
+```
+<ID>,<modulus in base 10>\n
+```
+
 
 Clone and `cd` to the repo. Run ``` make install ``` This will only create
 necessary folders for `gmp` I/O. Run the download-patch-build-install script
@@ -86,8 +93,9 @@ Compile with
 ```make batchgcd```
 and **after reading the disclaimer below**, run with
 ```
-./batchgcd <path to your target csv file>
+./batchgcd <path to your target csv file> [base]
 ```
+Default base is 16, add base10 as parameters to use moduli in base10
 
 Results **contain no factors** (this is made on purpose, see the disclaimer
 below), and only IDs are stored in `compromised.csv, duplicates.csv`.
