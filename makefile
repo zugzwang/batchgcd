@@ -17,5 +17,5 @@ memcheck:
 	valgrind --leak-check=full ./batchgcd toy.moduli
 
 clean:
-	rm -rf batchgcd *.o data/product_tree/* compromised.csv duplicates.csv
+	rm -rf batchgcd *.o data/product_tree/* compromised.csv duplicates.csv testpatch
 
