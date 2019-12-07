@@ -63,11 +63,11 @@ checked anyway (see `gmp_patch.sh`):
 ### Input file
 
 You need a csv file, containing integers in the following format
-
 ```
 <ID>,<modulus in base 16>\n
 ```
 You can also use
+```
 <ID>,<modulus in base 10>\n
 ```
 and set the `-base10` option when running.
