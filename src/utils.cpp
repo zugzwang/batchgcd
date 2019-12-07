@@ -9,20 +9,28 @@ vector<unsigned int> intsPerFloor;
 /* read_moduli_from_csv allocates and initializes the moduli referenced by
  * input_moduli, from the given file.
  */
-void read_moduli_from_csv( \
-        string filename, vector<mpz_class> *moduli, vector<int>*IDs) {
+void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<int>*IDs , int base=16) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
-    // Iterate through each line and split the content using delimeter
+    // Set base 10 or 16 (default)
+    string format;
+    switch(base) {
+        case 10:
+            format = "%Zd";
+            break;
+        default:
+            format = "%Zx";
+    }
     mpz_t n;
     mpz_init(n);
     int err = 0;
     bool zero = false;
+    cout << "Reading moduli from file.csv (using base " << base <<  ")" << endl;
     while(true) {
         int id;
         err = fscanf(file, "%d,", &id);
-        err = gmp_fscanf(file, "%Zx", n);
+        err = gmp_fscanf(file, format.c_str(), n);
         if(mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;
@@ -31,14 +39,14 @@ void read_moduli_from_csv( \
             break;
         }
         if (err != 1) {
-            cout << "Cannot process moduli file" << endl;
+            cout << "ERROR: Cannot process moduli file" << endl;
             throw std::exception();
         }
         IDs->push_back(id);
         moduli->push_back(mpz_class(n));
     }
     if(zero) {
-        cout << "Cannot process moduli file" << endl;
+        cout << "ERROR: Cannot process moduli file" << endl;
         exit(1);
     }
     mpz_clear(n);

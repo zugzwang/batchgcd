@@ -37,8 +37,11 @@
  */
 
 #include "utils.hpp"
+#include <getopt.h>
 
 int N_THREADS = 1;
+static int base_10_flag;
+
 using namespace std;
 
 /* Pre-requisites:
@@ -53,6 +56,20 @@ int main(int argc, char** argv){
         cout << "Please specify target csv file." << endl;
         exit(1);
     }
+    // Detect flags
+    static struct option long_options[] =
+        {
+          {"base10", no_argument, &base_10_flag, 1},
+          {0, 0, 0, 0}
+        };
+    int option_index = 0;
+    getopt_long_only (argc, argv, "", long_options, &option_index);
+
+    // Set base
+    int base = 16;
+    if(base_10_flag) base = 10;
+
+    // Prompt threads
     cout << "Define number of threads: ";
     cin >> N_THREADS;
 
@@ -66,7 +83,7 @@ int main(int argc, char** argv){
     vector<mpz_class> input_moduli;
     vector<int> IDs;
     clock_gettime(CLOCK_MONOTONIC, &start);
-    read_moduli_from_csv(argv[1], &input_moduli, &IDs);
+    read_moduli_from_csv(argv[1], &input_moduli, &IDs, base);
     int levels = product_tree(&input_moduli);
     clock_gettime(CLOCK_MONOTONIC, &finish);
     cout << "End Part (A)" << endl;
