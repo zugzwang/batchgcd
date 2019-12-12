@@ -110,11 +110,12 @@ int product_tree(vector<mpz_class> *X) {
 void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next) {
     _next->resize(_level->size()/2);
     vector<boost::thread> threads;
-    // Thread 'j' will handle all products in position eq. j mod N_THREADS.
-    for(int j = 0; j < N_THREADS; j++) {
+    int n_threads = min(N_THREADS, int(_next->size()));
+    // Thread 'j' will handle all products in position eq. j mod n_threads.
+    for(int j = 0; j < n_threads; j++) {
         threads.push_back(
-                boost::thread([j, _level, _next]() mutable {
-                    for(unsigned int i = j; i < _next->size(); i += N_THREADS) {
+                boost::thread([j, _level, _next, n_threads]() mutable {
+                    for(unsigned int i = j; i < _next->size(); i += n_threads) {
                         (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
                     }
                     string s = "     Thread " + to_string(j) + " finished.\n";
@@ -180,9 +181,10 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
     string filename = dir + to_string(l) + ".gmp";
     FILE* file = fopen(filename.c_str(), "r");
     int pos = 0;
-    for(unsigned int i = 0; i < _new->size(); i += N_THREADS) {
+    int n_threads = min(N_THREADS, int(_new->size()));
+    for(unsigned int i = 0; i < _new->size(); i += n_threads) {
         vector<boost::thread> threads;
-        for(int j = 0; j < N_THREADS; j++) {
+        for(int j = 0; j < n_threads; j++) {
             pos = i + j;
             if(i+j >= _new->size()) {
                 break;
