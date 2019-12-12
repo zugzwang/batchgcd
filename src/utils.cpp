@@ -206,6 +206,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
             threads.at(j).join();
         }
     }
+    cout << "     " + to_string(n_threads) + " threads finished.\n";
     fclose(file);
 }
 
