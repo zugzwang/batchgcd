@@ -198,6 +198,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
                         mpz_mul(value, value, value);
                         mpz_mod(value, (_R->at(pos/2)).get_mpz_t(), value);
                         _new->at(pos) = mpz_class(value);
+                        mpz_clear(value);
                         }));
         }
         for(unsigned int j = 0; j < threads.size(); j++) {
