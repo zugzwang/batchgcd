@@ -182,25 +182,24 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
     FILE* file = fopen(filename.c_str(), "r");
     int pos = 0;
     int n_threads = min(N_THREADS, int(_new->size()));
+    vector<boost::thread> threads;
     for(unsigned int i = 0; i < _new->size(); i += n_threads) {
-        vector<boost::thread> threads;
+        vector<boost::thread>().swap(threads);
         for(int j = 0; j < n_threads; j++) {
             pos = i + j;
             if(i+j >= _new->size()) {
                 break;
             }
             // Define operands for this thread
-            mpz_t _square;
-            mpz_init(_square);
-            mpz_inp_raw(_square, file);
-            mpz_class square(_square);
-            mpz_class *operand = &(_R->at(pos/2));
-            mpz_class *result = &(_new->at(pos));
-            threads.push_back(boost::thread([square, operand, result]() mutable {
-                        square *= square;
-                        *result = *operand % square;
+            mpz_t value;
+            mpz_init(value);
+            mpz_inp_raw(value, file);
+            threads.push_back(boost::thread([value, _R, _new, pos]() mutable {
+                        mpz_mul(value, value, value);
+                        mpz_mod(value, (_R->at(pos/2)).get_mpz_t(), value);
+                        _new->at(pos) = mpz_class(value);
+                        mpz_clear(value);
                         }));
-            mpz_clear(_square);
         }
         for(unsigned int j = 0; j < threads.size(); j++) {
             threads.at(j).join();
