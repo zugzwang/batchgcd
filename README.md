@@ -49,9 +49,6 @@ You need `g++, curl, m4, gmp, boost::thread` installed:
 apt-get install curl m4 libgmp3-dev libboost-thread-dev
 ```
 
-These requirements are fairly standard, and notice that there are no other
-third-party requirements.
-
 `curl` is only needed to download `gmp-6.1.2`. You can drop this requirement
 and download it manually. The `sha1` fingerprint of the `.tar.bz2` will be
 checked anyway (see `gmp_patch.sh`):
