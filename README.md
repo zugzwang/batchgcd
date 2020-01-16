@@ -107,5 +107,3 @@ targeting 2 million 2048-bit integers. Please **do the numbers** and use/modify
 **AT YOUR OWN RISK**.
 
 Suggestions/comments/questions are more than welcome.
-
-## Benchmarks (TODO)
