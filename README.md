@@ -1,5 +1,6 @@
-
 # `(C++)+GMP` BatchGCD algorithm
+
+Contact: Francisco (zugzwang)
 
 ## Description
 
@@ -95,17 +96,10 @@ If there are duplicates, you may want to filter them out *before* running the al
 
 ## Disclaimer
 
-Feel free to use, alter, or reproduce this implementation **AT
-YOUR OWN RISK**.
-
 This implementation uses the C++ wrapper around GMP arbitrary precision
 library, since it needs to handle potentially huge numbers. It favors writing
 intermediate variables to disk, so beware that, assuming that all `n` input
 integers are of bit length `l`, it efficiently writes a total disk memory of
 ```M = l * n * log(n)``` bits. That's 10.7 GB of information if you're
-targeting 2 million 2048-bit integers. Please **do the numbers** and use/modify
-**AT YOUR OWN RISK**.
+targeting 2 million 2048-bit integers. Please **do the numbers** before using.
 
-Suggestions/comments/questions are more than welcome.
-
-## Benchmarks (TODO)
