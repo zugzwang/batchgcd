@@ -179,6 +179,7 @@ int main(int argc, char** argv){
         cout << "duplicate share factors (run naïve GCDs).";
         cout << endl << endl;
     }
+    cout << endl << "See results in compromised.csv and duplicates.csv" << endl;
     cout << "Done, bye." << endl;
     return 0;
 }

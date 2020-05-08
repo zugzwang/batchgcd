@@ -5,13 +5,16 @@ LDFLAGS    = -lboost_system -pthread -lboost_thread -lgmp -static -L./gmp/patche
 default: batchgcd
 
 install:
-	mkdir data && mkdir data/product_tree
+	mkdir -p data data/product_tree && sh scripts/patch_gmp.sh
 
 batchgcd: src/batchgcd.cpp src/utils.cpp
 	$(CXX) $(CXXFLAGS) $? $(LDFLAGS) -o $@
 
 testpatch: src/test/testpatch.cpp src/utils.cpp
 	$(CXX) $(CXXFLAGS) $? $(LDFLAGS) -o $@
+
+test:
+	scripts/test_run.sh
 
 memcheck:
 	valgrind --leak-check=full ./batchgcd toy.moduli
