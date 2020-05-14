@@ -81,7 +81,7 @@ int main(int argc, char** argv){
     cout << "| Part (A) - Product 'Z' and product tree of moduli |" << endl;
     cout << " --------------------------------------------------- " << endl;
     vector<mpz_class> input_moduli;
-    vector<int> IDs;
+    vector<char*> IDs;
     clock_gettime(CLOCK_MONOTONIC, &start);
     read_moduli_from_csv(argv[1], &input_moduli, &IDs, base);
     int levels = product_tree(&input_moduli);
@@ -133,8 +133,8 @@ int main(int argc, char** argv){
     cout << "   *****************************  " << endl << endl;
 
     cout << "Verifying correctness before announcing results" << endl << endl;
-    vector<int> compromised;
-    vector<int> duplicates;
+    vector<char *> compromised;
+    vector<char *> duplicates;
     int false_positives = 0;
     // False positives should not exist, this is a sanity check for large input
     // sets.
@@ -161,14 +161,12 @@ int main(int argc, char** argv){
     ofstream file;
     file.open("compromised.csv");
     for(unsigned int i = 0; i < compromised.size(); i++) {
-        line = to_string(compromised[i]) + "\n";
-        file << line;
+        file << compromised[i] << "\n";
     }
     file.close();
     file.open("duplicates.csv");
     for(unsigned int i = 0; i < duplicates.size(); i++) {
-        line = to_string(duplicates[i]) + "\n";
-        file << line;
+        file << duplicates[i] << "\n";
     }
     file.close();
     if(duplicates.size()) {
