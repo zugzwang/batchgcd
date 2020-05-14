@@ -81,7 +81,7 @@ int main(int argc, char** argv){
     cout << "| Part (A) - Product 'Z' and product tree of moduli |" << endl;
     cout << " --------------------------------------------------- " << endl;
     vector<mpz_class> input_moduli;
-    vector<char*> IDs;
+    vector<string> IDs;
     clock_gettime(CLOCK_MONOTONIC, &start);
     read_moduli_from_csv(argv[1], &input_moduli, &IDs, base);
     int levels = product_tree(&input_moduli);
@@ -133,8 +133,8 @@ int main(int argc, char** argv){
     cout << "   *****************************  " << endl << endl;
 
     cout << "Verifying correctness before announcing results" << endl << endl;
-    vector<char *> compromised;
-    vector<char *> duplicates;
+    vector<string> compromised;
+    vector<string> duplicates;
     int false_positives = 0;
     // False positives should not exist, this is a sanity check for large input
     // sets.

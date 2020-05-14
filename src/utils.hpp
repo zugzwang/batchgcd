@@ -14,7 +14,7 @@ extern int N_THREADS;
 
 using namespace std;
 
-void read_moduli_from_csv(std::string, std::vector<mpz_class>*, std::vector<char*>*, int);
+void read_moduli_from_csv(std::string, std::vector<mpz_class>*, std::vector<string>*, int);
 int product_tree(std::vector<mpz_class>*);
 int product_tree_multithread(std::vector<mpz_class>*);
 int product_tree_seq(std::vector<mpz_class>*);

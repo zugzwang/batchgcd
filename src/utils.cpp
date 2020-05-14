@@ -9,7 +9,7 @@ vector<unsigned int> intsPerFloor;
 /* read_moduli_from_csv allocates and initializes the moduli referenced by
  * input_moduli, from the given file.
  */
-void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<char*>*IDs , int base=16) {
+void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<string>*IDs , int base=16) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
@@ -30,7 +30,6 @@ void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<cha
     while(true) {
         char id[32];
         read_fields = gmp_fscanf(file, format.c_str(), id, n);
-        gmp_printf("%s mpz = %Zx", id, n);
         if(mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;
