@@ -9,7 +9,7 @@ vector<unsigned int> intsPerFloor;
 /* read_moduli_from_csv allocates and initializes the moduli referenced by
  * input_moduli, from the given file.
  */
-void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<int>*IDs , int base=16) {
+void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<char*>*IDs , int base=16) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
@@ -17,28 +17,28 @@ void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<int
     string format;
     switch(base) {
         case 10:
-            format = "%Zd";
+            format = "%32[^,],%Zd\n";
             break;
         default:
-            format = "%Zx";
+            format = "%32[^,],%Zx\n";
     }
     mpz_t n;
     mpz_init(n);
-    int err = 0;
+    int read_fields = 0;
     bool zero = false;
     cout << "Reading moduli from file.csv (using base " << base <<  ")" << endl;
     while(true) {
-        int id;
-        err = fscanf(file, "%d,", &id);
-        err = gmp_fscanf(file, format.c_str(), n);
+        char id[32];
+        read_fields = gmp_fscanf(file, format.c_str(), id, n);
+        gmp_printf("%s mpz = %Zx", id, n);
         if(mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;
         }
-        if(err == EOF) {
+        if(read_fields == EOF) {
             break;
         }
-        if (err != 1) {
+        if (read_fields != 2) {
             cout << "ERROR: Cannot process moduli file" << endl;
             throw std::exception();
         }

@@ -68,7 +68,7 @@ Perform a toy test run with
 ```
 make test
 ```
-This should expose 8 compromised moduli out of the 13 samples.
+This should expose 8 compromised moduli and 2 duplicates out of the 15 samples.
 
 ### Run
 
