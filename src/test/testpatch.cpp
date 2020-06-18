@@ -1,9 +1,14 @@
+/* Copyright (C) 2020 Francisco Vial - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the WTFPL.
+ */
+
 #include "../utils.hpp"
 
-using namespace std;
+using std::cout;
 int N_THREADS = 1;
 
-void check_gmp_import_overflow(){
+void check_gmp_import_overflow() {
     cout << "Checking mpz_inp_raw" << endl;
     mpz_t y;
     mpz_init(y);
@@ -11,7 +16,7 @@ void check_gmp_import_overflow(){
     double elapsed;
     mpz_class Y = mpz_class(0);
     mpz_class X = mpz_class("26260501492055003879090391148004259823668635955434940022240258423696972549087016976752741339581688667116285774789874965785477453615444090337309187413036370189140994737011441584670955662781635132759980523310138734737307258076009827470257979133586680521639320415528310921798062062373359095503578858718997775793827432391641667052497696724948747137134661578015238047990967731934660718227627803874984645637904353370058830616916834689206916806975827756356442055029361147529113398133136299120164869948173129966790462188820613998260570826459291086946318100842679711014724407434914501418235750786671160222080472818057103702049");
-    for(int i = 0; i < 25; i++) {
+    for (int i = 0; i < 25; i++) {
         cout << "================================" << endl;
         cout << "Level " << i << endl;
         cout << "|X|: " << mpz_sizeinbase(X.get_mpz_t(), 2) << " bits." << endl;
@@ -37,7 +42,7 @@ void check_gmp_import_overflow(){
         elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
         cout << "Reading took (s): " << elapsed << endl;
         Y = mpz_class(y);
-        if(X == Y){
+        if (X == Y) {
             cout << "(OK, retrieved X)" << endl;
         } else {
             cout << "Could not retrieve X!" << endl;
@@ -54,7 +59,7 @@ void check_gmp_import_overflow(){
     }
 }
 
-int main(int argc, char** argv){
+int main(int argc, char** argv) {
     check_gmp_import_overflow();
     return 0;
 }

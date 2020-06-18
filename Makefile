@@ -22,3 +22,5 @@ memcheck:
 clean:
 	rm -rf batchgcd *.o data/product_tree/* compromised.csv duplicates.csv testpatch
 
+lint:
+	cpplint --verbose=2 --recursive --extensions=hpp,cpp *

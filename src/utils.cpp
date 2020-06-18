@@ -1,6 +1,15 @@
-#include "utils.hpp"
+/* Copyright (C) 2020 Francisco Vial - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the WTFPL.
+ */
 
-using namespace std;
+#include "utils.hpp"
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::min;
+using std::to_string;
 
 // intsPerFloor keeps track of the amount of integers in each floor of the
 // tree.
@@ -9,13 +18,17 @@ vector<unsigned int> intsPerFloor;
 /* read_moduli_from_csv allocates and initializes the moduli referenced by
  * input_moduli, from the given file.
  */
-void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<string>*IDs , int base=16) {
+void read_moduli_from_csv(
+        string filename,
+        vector<mpz_class> *moduli,
+        vector<string>*IDs,
+        int base = 16) {
     cout << "Reading moduli from " << filename << endl;
     FILE* file = fopen(filename.c_str(), "rb");
     assert(file);
     // Set base 10 or 16 (default)
     string format;
-    switch(base) {
+    switch (base) {
         case 10:
             format = "%32[^,],%Zd\n";
             break;
@@ -27,14 +40,14 @@ void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<str
     int read_fields = 0;
     bool zero = false;
     cout << "Reading moduli from file.csv (using base " << base <<  ")" << endl;
-    while(true) {
+    while (true) {
         char id[32];
         read_fields = gmp_fscanf(file, format.c_str(), id, n);
-        if(mpz_cmp_ui(n, 0) == 0) {
+        if (mpz_cmp_ui(n, 0) == 0) {
             zero = true;
             cout << "Modulus with id " << id << " equals 0." << endl;
         }
-        if(read_fields == EOF) {
+        if (read_fields == EOF) {
             break;
         }
         if (read_fields != 2) {
@@ -44,7 +57,7 @@ void read_moduli_from_csv(string filename, vector<mpz_class> *moduli, vector<str
         IDs->push_back(id);
         moduli->push_back(mpz_class(n));
     }
-    if(zero) {
+    if (zero) {
         cout << "ERROR: Cannot process moduli file" << endl;
         exit(1);
     }
@@ -77,7 +90,7 @@ int product_tree(vector<mpz_class> *X) {
         cout << "   Multiplying " << current_level.size() << " ints of ";
         cout << mpz_sizeinbase(current_level[0].get_mpz_t(), 2) << " bits ";
         cout << endl;
-        multithread_level_mult(&current_level, &new_level);
+        mt_level_mult(&current_level, &new_level);
 
         // Append orphan node
         if (current_level.size()%2 != 0) {
@@ -89,7 +102,7 @@ int product_tree(vector<mpz_class> *X) {
             // Free leaves after using, in order to get that RAM if necessary.
             vector<mpz_class>().swap(*X);
         }
-        l ++;
+        l++;
     }
     delete prod;
 
@@ -102,26 +115,26 @@ int product_tree(vector<mpz_class> *X) {
     return l+1;
 }
 
-/* multithread_level_mult takes the given level, and computes the next one,
+/* mt_level_mult takes the given level, and computes the next one,
  * i.e.,
  *             _next[i] = _level[2*i] * _level[2*i+1].
  */
-void multithread_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next) {
+void mt_level_mult(vector<mpz_class> *_level, vector<mpz_class> *_next) {
     _next->resize(_level->size()/2);
     vector<boost::thread> threads;
-    int n_threads = min(N_THREADS, int(_next->size()));
+    int n_threads = min(N_THREADS, static_cast<int>(_next->size()));
     // Thread 'j' will handle all products in position eq. j mod n_threads.
-    for(int j = 0; j < n_threads; j++) {
+    for (int j = 0; j < n_threads; j++) {
         threads.push_back(
-                boost::thread([j, _level, _next, n_threads]() mutable {
-                    for(unsigned int i = j; i < _next->size(); i += n_threads) {
-                        (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
-                    }
-                    string s = "     Thread " + to_string(j) + " finished.\n";
-                    cout << s;
-                    }));
+            boost::thread([j, _level, _next, n_threads]() mutable {
+                for (unsigned int i = j; i < _next->size(); i += n_threads) {
+                (*_next)[i] = (*_level)[2*i] * (*_level)[2*i+1];
+                }
+                string s = "     Thread " + to_string(j) + " finished.\n";
+                cout << s;
+                }));
     }
-    for(auto& th : threads)
+    for (auto& th : threads)
         th.join();
     vector<boost::thread>().swap(threads);
 }
@@ -140,7 +153,7 @@ void remainders_squares_simple(int levels, vector<mpz_class> *R) {
     mpz_class Z = (*R)[0];
     read_level_from_file(0, R);
     cout << "   Computing partial remainders ";
-    for(unsigned int i = 0; i < R->size(); i++) {
+    for (unsigned int i = 0; i < R->size(); i++) {
         cout << i << endl;
         (*R)[i] *= (*R)[i];
         (*R)[i] = Z % (*R)[i];
@@ -158,35 +171,35 @@ void remainders_squares_fast(int levels, vector<mpz_class> *R) {
     vector<mpz_class> newR;
     read_level_from_file(levels-1, R);
     // Sanity check
-    if(int(R->size()) != 1) {
+    if (static_cast<int>(R->size()) != 1) {
         cout << "Fatal error: Incomplete product tree" << endl;
         throw std::exception();
     }
-    for(int l = levels-2; l >= 0; l--) {
+    for (int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
         cout << "   Computing partial remainders ";
         cout << levels-2-l << " of " << levels-2 << endl;
-        multithread_partial_remainders(l, R, &newR);
+        partial_remainders(l, R, &newR);
         *R = newR;
     }
     // Free used memory
     vector<mpz_class>().swap(newR);
 }
 
-/* multithread_partial_remaiders sets _new[k] = R[k/2] % (a square) for all k */
-void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_class> *_new) {
+// multithread_partial_remaiders sets _new[k] = R[k/2] % (a square) for all k.
+void partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_class> *_new) {
     _new->resize(intsPerFloor[l]);
     string dir = "data/product_tree/level";
     string filename = dir + to_string(l) + ".gmp";
     FILE* file = fopen(filename.c_str(), "r");
     int pos = 0;
-    int n_threads = min(N_THREADS, int(_new->size()));
+    int n_threads = min(N_THREADS, static_cast<int>(_new->size()));
     vector<boost::thread> threads;
-    for(unsigned int i = 0; i < _new->size(); i += n_threads) {
+    for (unsigned int i = 0; i < _new->size(); i += n_threads) {
         vector<boost::thread>().swap(threads);
-        for(int j = 0; j < n_threads; j++) {
+        for (int j = 0; j < n_threads; j++) {
             pos = i + j;
-            if(i+j >= _new->size()) {
+            if (i+j >= _new->size()) {
                 break;
             }
             // Define operands for this thread
@@ -200,7 +213,7 @@ void multithread_partial_remainders(int l, vector<mpz_class> *_R, vector<mpz_cla
                         mpz_clear(value);
                         }));
         }
-        for(unsigned int j = 0; j < threads.size(); j++) {
+        for (unsigned int j = 0; j < threads.size(); j++) {
             threads.at(j).join();
         }
     }
@@ -212,7 +225,7 @@ void remainders_squares_fast_seq(int levels, vector<mpz_class> *R) {
     vector<mpz_class> newR;
     read_level_from_file(levels-1, R);
     // Sanity check
-    if(int(R->size()) != 1) {
+    if (static_cast<int>(R->size()) != 1) {
         cout << "Fatal error: Incomplete product tree" << endl;
         throw std::exception();
     }
@@ -220,14 +233,14 @@ void remainders_squares_fast_seq(int levels, vector<mpz_class> *R) {
     mpz_t _square;
     mpz_init(_square);
     mpz_class square;
-    for(int l = levels-2; l >= 0; l--) {
+    for (int l = levels-2; l >= 0; l--) {
         vector<mpz_class>().swap(newR);
         cout << "   Computing partial remainders ";
         cout << levels-2-l << " of " << levels-2 << endl;
         unsigned int lengthY = intsPerFloor[l];
         string filename = dir + to_string(l) + ".gmp";
         FILE* file = fopen(filename.c_str(), "r");
-        for(unsigned int i = 0; i < lengthY; i++) {
+        for (unsigned int i = 0; i < lengthY; i++) {
             mpz_inp_raw(_square, file);
             square = mpz_class(_square);
             square *= square;
@@ -250,7 +263,7 @@ void write_level_to_file(int l, vector<mpz_class> *X) {
     cout << "   Writing product tree level to " << dir << endl;
     FILE* file = fopen(dir.c_str(), "wb");
     assert(file);
-    for(unsigned int i = 0; i < X->size(); i++) {
+    for (unsigned int i = 0; i < X->size(); i++) {
         mpz_out_raw(file, (*X)[i].get_mpz_t());
     }
     fclose(file);
@@ -268,7 +281,7 @@ void read_level_from_file(int l, vector<mpz_class> *moduli) {
     mpz_init(mod);
 
     FILE* file = fopen(dir.c_str(), "r");
-    for(unsigned int i = 0; i < intsPerFloor[l]; i++) {
+    for (unsigned int i = 0; i < intsPerFloor[l]; i++) {
         mpz_inp_raw(mod, file);
         moduli->push_back(mpz_class(mod));
     }
@@ -278,7 +291,7 @@ void read_level_from_file(int l, vector<mpz_class> *moduli) {
     cout << mpz_sizeinbase((*moduli)[0].get_mpz_t(), 2) << " bits" << endl;
 }
 
-void my_mpz_inp_raw(mpz_class &x, FILE* file) {
+void my_mpz_inp_raw(mpz_class* x, FILE* file) {
     std::ifstream source("eraseme.txt", std::ios_base::binary);
     int byte, next_byte;
     source.get();
@@ -289,8 +302,8 @@ void my_mpz_inp_raw(mpz_class &x, FILE* file) {
     while (source) {
         byte = next_byte;
         next_byte = source.get();
-        x <<= 8;
-        x += byte;
+        *x <<= 8;
+        *x += byte;
         if (next_byte == -1) {
             continue;
         }

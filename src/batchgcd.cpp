@@ -1,6 +1,6 @@
-/*
- * TODO:
- *  - Tests
+/* Copyright (C) 2020 Francisco Vial - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the WTFPL.
  *
  * --------------------------------------------
  * C++ implementation of the BatchGCD algorithm
@@ -36,13 +36,13 @@
  *  Suggestions/comments/questions are more than welcome: fvial@protonmail.com
  */
 
-#include "utils.hpp"
 #include <getopt.h>
+#include "utils.hpp"
 
 int N_THREADS = 1;
 static int base_10_flag;
 
-using namespace std;
+using std::cout, std::endl, std::cin, std::vector, std::ofstream;
 
 /* Pre-requisites:
  *
@@ -51,23 +51,22 @@ using namespace std;
  *
  */
 
-int main(int argc, char** argv){
-    if(argc < 2) {
+int main(int argc, char** argv) {
+    if (argc < 2) {
         cout << "Please specify target csv file." << endl;
         exit(1);
     }
     // Detect flags
-    static struct option long_options[] =
-        {
+    static struct option long_options[] = {
           {"base10", no_argument, &base_10_flag, 1},
           {0, 0, 0, 0}
         };
     int option_index = 0;
-    getopt_long_only (argc, argv, "", long_options, &option_index);
+    getopt_long_only(argc, argv, "", long_options, &option_index);
 
     // Set base
     int base = 16;
-    if(base_10_flag) base = 10;
+    if (base_10_flag) base = 10;
 
     // Prompt threads
     cout << "Define number of threads: ";
@@ -109,7 +108,7 @@ int main(int argc, char** argv){
     clock_gettime(CLOCK_MONOTONIC, &start);
     cout << "Re-reading moduli (were destroyed in part B)" << endl;
     read_level_from_file(0, &input_moduli);
-    for(unsigned int i = 0; i < input_moduli.size(); i++) {
+    for (unsigned int i = 0; i < input_moduli.size(); i++) {
         R[i] = R[i] / input_moduli[i];
         R[i] = gcd(R[i], input_moduli[i]);
     }
@@ -122,7 +121,7 @@ int main(int argc, char** argv){
     cout << "   *****************************  " << endl;
     cout << "   *****************************  " << endl;
     cout << "   *  Total time elapsed (s):  *" << endl;
-    int totalSec = int(elapsedA + elapsedB + elapsedC);
+    int totalSec = static_cast<int>(elapsedA + elapsedB + elapsedC);
     int totalMin = totalSec / 60;
     int totalHour = totalMin / 60;
     totalSec %= 60;
@@ -138,11 +137,11 @@ int main(int argc, char** argv){
     int false_positives = 0;
     // False positives should not exist, this is a sanity check for large input
     // sets.
-    for(int i = 0; i < int(input_moduli.size()); i++) {
-        if(R[i] != 1) {
-            if(R[i] == 0 || input_moduli[i] % R[i] != 0) {
+    for (int i = 0; i < static_cast<int>(input_moduli.size()); i++) {
+        if (R[i] != 1) {
+            if (R[i] == 0 || input_moduli[i] % R[i] != 0) {
                 false_positives += 1;
-            } else if(R[i] == input_moduli[i]) {
+            } else if (R[i] == input_moduli[i]) {
                 duplicates.push_back(IDs[i]);
             } else {
                 compromised.push_back(IDs[i]);
@@ -160,16 +159,16 @@ int main(int argc, char** argv){
     string line = "";
     ofstream file;
     file.open("compromised.csv");
-    for(unsigned int i = 0; i < compromised.size(); i++) {
+    for (unsigned int i = 0; i < compromised.size(); i++) {
         file << compromised[i] << "\n";
     }
     file.close();
     file.open("duplicates.csv");
-    for(unsigned int i = 0; i < duplicates.size(); i++) {
+    for (unsigned int i = 0; i < duplicates.size(); i++) {
         file << duplicates[i] << "\n";
     }
     file.close();
-    if(duplicates.size()) {
+    if (duplicates.size()) {
         cout << "Note: filter duplicates directly from the input file ";
         cout << "(i.e., ignoring the output file)" << endl;
         cout << "and run again. They may contain compromised moduli. ";
@@ -186,7 +185,7 @@ int main(int argc, char** argv){
 void output_base16(vector<mpz_class> *X) {
     ofstream file;
     file.open("base16.moduli");
-    for(unsigned int i = 0; i < X->size(); i++) {
+    for (unsigned int i = 0; i < X->size(); i++) {
         file << X->at(i).get_str(16) << "\n";
     }
     file.close();
