@@ -1,8 +1,4 @@
-/* Copyright (C) 2020 Francisco Vial - All Rights Reserved
- * You may use, distribute and modify this code under the
- * terms of the WTFPL.
- *
- * --------------------------------------------
+/* --------------------------------------------
  * C++ implementation of the BatchGCD algorithm
  * --------------------------------------------
  *
